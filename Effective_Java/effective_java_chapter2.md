@@ -65,10 +65,11 @@ public static Boolean valueOf(boolean b){
 3. 정적 팩터리 메서드는 프로그래머가 찾기 어렵다.
     - 사용자는 정적 팩터리 메서드 방식 클래스를 인스턴스화할 방법을 알아내야 함.
 
+---
 
 # 생성자에 매개변수가 많다면 빌더를 고려하라
 
-점층적 생성자 패턴
+**점층적 생성자 패턴**
 ```java
 public class NutritionFacts{
   private final int servingSize;
@@ -110,3 +111,30 @@ public class NutritionFacts{
 
 보통 이런 생성자는 사용자가 설정하길 원치 않는 매개변수까지 포함하기 쉬움.
 
+매개변수가 많아질 수록 걷잡을 수 없게됨. ( 점층적 생성자 패턴도 쓸 수는 있지만, 매개변수 개수가 많아지면 클라이언트 코드를 작성하거나 읽기 어려움. )
+
+---
+
+**자바빈즈 패턴(JavaBeans pattern)**
+
+매개변수가 없는 생성자로 객체를 만든 후, 세터 메서드들을 호출해 원하는 매개변수의 값을 설정하는 방식.
+
+```java
+public class NutritionFacts{
+  private int servingSize=-1;
+  private int servings=-1;
+  private int calories=0;
+  private int fat=0;
+  private int sodium=0;
+  private int carbohydrate=0;
+  
+  public NutritionFacts(){}
+  
+  public void setServingSize(int val){ servingSize=val; }
+  public void setServings(int val){ servings=val; }
+  public void setCalories(int val){ calories=val; }
+  public void setFat(int val){ fat=val; }
+  public void setSodium(int val){ sodium=val; }
+  public void setCarbohydrate(int val){ carbohydrate=val; }
+}
+```
