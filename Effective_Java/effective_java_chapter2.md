@@ -258,5 +258,33 @@ ex) 리시트의 크기는 반드시 0 이상이어야 하니, 한순간이라�
     
 ex) Period 클래스에서 start 필드의 값은 반드시 end 필드의 값보다 앞서야 하므로, 두 값아 역전되면 불변식이 깨진 것.
 
+가변 객체에서도 불변식은 존재할 수 있으며, 넓게 보면 불변은 불변식의 극단적인 예라 할 수 있음.
+
 ---
 
+빌더 패턴은 계층적으로 설계된 클래스와 함께 쓰기에 좋다.
+
+```java
+public abstract class Pizza{
+  public enum Topping{HAM,MUSHROOM,ONION,PEPPER,SAUSAGE}
+  final Set<Topping> toppings;
+  
+  abstract static class Builder<T extends Builder<T>>{
+    EnumSet<Topping> toppings=EnumSet.noneOf(Topping.class);
+    public T addTopping(Topping topping){
+      toppings.add(Objects.requireNonNuill(topping));
+      return self();
+    }
+    
+    abstract Pizza build();
+    
+    // 하위 클래스는 이 메서드를 재정의하여 this를 반환하도록 해야함.
+    protected abstract T self();
+  }
+  
+  Pizza(Builder<?> builder){
+    toppings=builder.toppings.clone();
+  }
+  
+}
+```
