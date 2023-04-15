@@ -224,4 +224,10 @@ public class NutritionFacts{
 빌더의 세터 메서드들은 빌더 자신을 반환하기 때문에 연쇄적으로 호출이 가능함.
 - 메서드 호출이 흐르듯 연결된다는 뜻으로 플루언트 API ( fluent API ) 혹은 메서드 연쇄( method chaining )라 함.
 
+```java
+NutritionFacts cocaCola = new NutritionFacts.Builder(240,8).calories(100).sodium(35).carbohydrate(27).build();
+```
+
+빌더 패턴은 파이썬과 스칼라에 있는 명명된 선택적 매개변수를 흉내 낸 것.
+
 
