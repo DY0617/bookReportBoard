@@ -367,3 +367,8 @@ NyPizza pizza=new NyPizza.Builder(SMALL).addTopping(SAUSAGE).addTopping(ONION).b
 Calzone calzone=new Calzone.Builder().addTopping(HAM).sauceInside().build();
 ```
 
+빌더를 이용하면 가변인수 매개변수를 여러 개 사용할 수 있음 (생성자는 불가능)
+
+메서드를 여러 번 호출하도록 하고 각 호출 때 넘겨진 매개변수들을 하나의 필드로 모을 수도 있다.
+- 위의 addTopping 메서드가 이에 해당함.
+
