@@ -90,5 +90,23 @@ public class NutritionFacts{
     this(servingSize,servings,calories,fat,0);
   }
   
+  public NutritionFacts(int servingSize, int servings, int calories, int fat, int sodium){
+    this(servingSize,servings,calories,fat,sodium,0);
+  }
+  
+  public NutritionFacts(int servingSize, int servings, int calories, int fat, int sodium, int carbohydrate){
+    this.servingSize=servingSize;
+    this.servings=servings;
+    this.calories=calories;
+    this.fat=fat;
+    this.sodium=sodium;
+    this.carbohydrate=carbohydrate;
+  }
+  
 }
 ```
+
+점층적 생성자 패턴에서 인스턴스를 만드려면 원하는 매개변수를 모두 포함한 생성자 중 가장 짧은 것을 골라 호출하면 된다.
+
+보통 이런 생성자는 사용자가 설정하길 원치 않는 매개변수까지 포함하기 쉬움.
+
