@@ -236,3 +236,27 @@ NutritionFacts cocaCola = new NutritionFacts.Builder(240,8).calories(100).sodium
 
 검사해서 잘못된 점을 발견하면 어떤 매개변수가 잘못되었는지를 자세히 알려주는 메시지를 담아 IllegalArgumentException을 던지면 된다.
 
+---
+
+**불변**
+
+불변( immutable, immutability )은 어떠한 변경도 허용하지 않는다는 뜻.
+
+가변 객체와 구분하는 용도로 쓰임.
+
+ex) String 객체
+
+---
+
+**불변식**
+
+불변식( invariant )은 프로그램이 실행되는 동안, 혹은 정해진 기간 동안 반드시 만족해야 하는 조건.
+
+변경을 허용할 수는 있으나 주어진 조건 내에서만 허용함.
+
+ex) 리시트의 크기는 반드시 0 이상이어야 하니, 한순간이라도 음수 값이 된다면 불변식이 깨진 것.
+    
+ex) Period 클래스에서 start 필드의 값은 반드시 end 필드의 값보다 앞서야 하므로, 두 값아 역전되면 불변식이 깨진 것.
+
+---
+
