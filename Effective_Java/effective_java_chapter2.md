@@ -285,6 +285,73 @@ public abstract class Pizza{
   Pizza(Builder<?> builder){
     toppings=builder.toppings.clone();
   }
+}
+```
+
+Pizza.Builder 클래스는 재귀적 타입 한정( 챕터 5 참고 )을 이용하는 제네릭 타입.
+
+추상 메서드인 self를 더해 하위 클래스에서는 형변환하지 않고도 메서드 연쇄를 지원할 수 있음.
+
+self타입이 없는 자바를 위한 이 우회 방법을 시뮬레이트한 셀프 타입( simulated self-type ) 관용구라 함.
+
+아래 Pizza의 하위 클래스 2개가 있음.
+
+```java
+public class NyPizza extends Pizza{
+  public enum Size{SMALL,MEDIUM,LARGE}
+  private final Size size;
+
+  public static class Builder extends Pizza.Builder<Builder>{
+    private final Size size;
   
+    public Builder(Size size){
+      this.size=Objects.requireNonNull(size);
+    }
+  
+    @Override
+    public NyPizza build(){
+      return new NyPizza(this);
+    }
+  
+    @Override
+    protected Builder self(){
+      return this;
+    }
+  }
+  
+  private NyPizza(Builder builder){
+    super(builder);
+    size=builder.size;
+  }
+}
+```
+
+```java
+public class Calzone extends Pizza{  
+  private final boolean sauceInside;
+
+  public static class Builder extends Pizza.Builder<Builder>{
+    private boolean sauceInside=false;
+  
+    public Builder sauceInside(){
+      sauceInside=true;
+      return this;
+    }
+  
+    @Override
+    public Calzone build(){
+      return new Calzone(this);
+    }
+  
+    @Override
+    protected Builder self(){
+      return this;
+    }
+  }
+  
+  private Calzone(Builder builder){
+    super(builder);
+    sauceInside=builder.sauceInside;
+  }
 }
 ```
