@@ -64,3 +64,31 @@ public static Boolean valueOf(boolean b){
 
 3. 정적 팩터리 메서드는 프로그래머가 찾기 어렵다.
     - 사용자는 정적 팩터리 메서드 방식 클래스를 인스턴스화할 방법을 알아내야 함.
+
+
+# 생성자에 매개변수가 많다면 빌더를 고려하라
+
+점층적 생성자 패턴
+```java
+public class NutritionFacts{
+  private final int servingSize;
+  private final int servings;
+  private final int calories;
+  private final int fat;
+  private final int sodium;
+  private final int carbohydrate;
+  
+  public NutritionFacts(int servingSize, int servings){
+    this(servingSize,servings,0);
+  }
+  
+  public NutritionFacts(int servingSize, int servings, int calories){
+    this(servingSize,servings,calories,0);
+  }
+  
+  public NutritionFacts(int servingSize, int servings, int calories, int fat){
+    this(servingSize,servings,calories,fat,0);
+  }
+  
+}
+```
