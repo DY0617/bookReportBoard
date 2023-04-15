@@ -210,6 +210,18 @@ public class NutritionFacts{
     }    
   }
   
-  
+  private NutritionFacts(Builder builder){
+    servingSize=builder.servingSize;
+    servings=builder.servings;
+    calories=builder.calories;
+    fat=builder.fat;
+    sodium=builder.sodium;
+    carbohydrate=builder.carbohydrate;
+  }
 }
 ```
+
+빌더의 세터 메서드들은 빌더 자신을 반환하기 때문에 연쇄적으로 호출이 가능함.
+- 메서드 호출이 흐르듯 연결된다는 뜻으로 플루언트 API ( fluent API ) 혹은 메서드 연쇄( method chaining )라 함.
+
+
