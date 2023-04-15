@@ -355,3 +355,15 @@ public class Calzone extends Pizza{
   }
 }
 ```
+
+공변 반환 타이핑 ( covariant return typing )
+
+하위 클래스 메서드가 상위 클래스의 메서드가 정의한 반환 타입이 아닌, 그 하위 타입을 반환하는 기능
+
+각 하위 클래스의 빌더가 정의한 build 메서드는 해당하는 구체 하위 클래스를 반환하도록 선언.
+
+```java
+NyPizza pizza=new NyPizza.Builder(SMALL).addTopping(SAUSAGE).addTopping(ONION).build();
+Calzone calzone=new Calzone.Builder().addTopping(HAM).sauceInside().build();
+```
+
