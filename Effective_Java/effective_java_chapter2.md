@@ -149,3 +149,67 @@ public class NutritionFacts{
 
 스레드 안정성을 얻으려면 프로그래머가 추가 작업을 해줘야 함.
 
+(단점을 완화하기 위해 생성이 끝난 객체를 수동으로 얼리고 얼리기 전에는 사용할 수 없도록 하기도 함. 허나 다루기 어려워서 실전에서 자주 쓰이지 않음.)
+
+
+---
+
+**빌더 패턴(Builder pattern)**
+
+클라이언트는 필요한 객체를 직접 만드는 대신 필수 매개변수만으로 생성자를 호출해 빌더 객체를 얻음.
+
+그런 다음 빌더 객체가 제공하는 일종의 세터 메서드들로 원하는 선택 매개변수들을 설정함.
+
+마지막으로 매개변수가 없는 build 메서드를 호출해 우리에게 필요한 객체를 얻는다.
+
+```java
+public class NutritionFacts{
+  private final int servingSize;
+  private final int servings;
+  private final int calories;
+  private final int fat;
+  private final int sodium;
+  private final int carbohydrate;
+  
+  public static class Builder{
+    private final int servingSize;
+    private final int servings;
+    
+    private int calories=0;
+    private int fat=0;
+    private int sodium=0;
+    private int carbohydrate=0;
+    
+    public Builder(int servingSize, int servings){
+      this.servingSize=servingSize;
+      this.servings=servings;
+    }
+    
+    public Builder calories(int val){
+      calories=val;
+      return this;
+    }
+    
+    public Builder fat(int val){
+      fat=val;
+      return this;
+    }
+    
+    public Builder sodium(int val){
+      sodium=val;
+      return this;
+    }
+    
+    public Builder carbohydrate(int val){
+      carbohydrate=val;
+      return this;
+    }
+    
+    public NutritionFacts build(){
+      return new NutritionFacts(this);
+    }    
+  }
+  
+  
+}
+```
