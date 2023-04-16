@@ -431,3 +431,84 @@ public class Elvis{
 }
 ```
 
+private 생성자는 Elvis.INSTANCE를 초기화할 때 한번만 호출됨.
+
+public, protected 생성자가 없으므로 Elvis 클래스가 초기화될 때 만들어진 인스턴스가 전체 시스템에서 하나뿐임이 보장됨.
+
+해당 클래스가 싱글턴임이 API에 명백히 드러난다는 장점이 있음.
+
+간결한 코드 작성 가능.
+
+---
+
+- 정적 팩터리 메서드를 public static 멤버로 제공하는 방식
+
+```java
+public class Elvis{
+  private static final Elvis INSTANCE= new Elvis();
+  private Elvis(){ ... }
+  public static Elvis getInstance(){return INSTANCE;}
+  
+  public void leaveTheBuilding(){ ... }
+}
+```
+
+Elvis.getInstance가 항상 같은 객체의 참조를 반환하므로, 인스턴스가 전체 시스템에서 하나뿐임이 보장됨.
+
+API를 바꾸지 않고도 싱글턴이 아니게 변경할 수 있음.
+- 유일한 인스턴스를 반환하던 팩터리 메서드가 호출하는 스레드별로 다른 인스턴스를 넘겨주게 할 수 있음.
+
+원한다면 정적 팩터리를 제네릭 싱글턴 팩터리로 만들 수 있음.
+
+정적 팩터리의 메서드 참조를 공급자(supplier)로 사용할 수 있음.
+
+    Elvis::getInstance 를 Supplier<Elvis>로 사용.
+
+---
+
+위 두 방법 중 하나의 방법으로 만든 싱글턴 클래스를 직렬화하려면 단순히 Serializable을 구현한다고 선언하는 것만으로는 부족하고, 모든 인스턴스 필드를 일시적(transient)이라고 선언하고 readResolve 메서드를 제공해야 함.
+- 이렇게 하지 않으면 직렬화된 인스턴스를 역직렬화할 때마다 새로운 인스턴스가 만들어짐.
+
+```java
+public class Elvis{
+  private static final Elvis INSTANCE= new Elvis();
+  private Elvis(){ ... }
+  public static Elvis getInstance(){return INSTANCE;}
+  
+  public void leaveTheBuilding(){ ... }
+  
+  //위 코드에서 가짜 Elvis가 탄생함.
+  //가짜 Elvis 탄생을 예방하고 싶다면 Elvis 클래스에 다음의 readResolve 메서드를 추가.
+  
+  private Object readResolve(){
+    //진짜 Elvis를 반환하고 가짜 Elvis는 가비지 컬렉터에 맡긴다.
+    return INSTANCE;
+  }
+}
+```
+
+---
+
+- 원소가 하나인 열거 타입을 선언하는 방식
+
+```java
+public enum Elvis{
+  INSTANCE;
+  
+  public void leaveTheBuilding(){ ... }
+}
+```
+
+public 필드 방식과 비슷하지만, 더 간결하고 추가 노력 없이 직렬화할 수 있고, 아주 복잡한 직렬화 상황이나 리플렉션 공격에서도 제 2의 인스턴스가 생기는 일을 완벽하게 막아줌.
+
+**대부분의 상황에서 원소가 하나뿐인 열거 타입이 싱글턴을 만드는 가장 좋은 방법**
+
+But
+
+만들려는 싱글턴이 Enum 외의 클래스를 상속해야 하낟면 이 방법은 사용할 수 없음.
+- 열거 타입이 다른 인터페이스를 구현하도록 선언 할 수는 있다.
+
+---
+
+# 인스턴스화를 막으려거든 private 생성자를 사용하라
+
