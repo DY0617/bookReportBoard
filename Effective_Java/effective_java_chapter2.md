@@ -414,3 +414,20 @@ Calzone calzone=new Calzone.Builder().addTopping(HAM).sauceInside().build();
 ex) 함수와 같은 무상태 객체, 설계상 유일해야 하는 시스템 컴포넌트
 
 클래스를 싱글턴으로 만들면 이를 사용하는 클라이언트를 테스트하기가 어려워질 수 있음.
+
+---
+
+싱글턴을 만드는 방식
+
+기본적으로 생성자는 private로 감춰두고, 유일한 인스턴스에 접근할 수 있는 수단으로 public static 멤버를 하나 마련해 둠.
+
+- public static 멤버가 final 필드인 방식
+
+```java
+public class Elvis{
+  public static final Elvis INSTANCE=new Elvis();
+  private Elvis(){ ... }
+  public void leaveTheBuilding(){ ... }
+}
+```
+
