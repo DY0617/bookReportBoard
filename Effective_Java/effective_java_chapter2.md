@@ -407,3 +407,10 @@ Calzone calzone=new Calzone.Builder().addTopping(HAM).sauceInside().build();
 
 # private 생성자나 열거 타입으로 싱글턴임을 보증하라
 
+**싱글턴**
+
+인스턴스를 오직 하나만 생성할 수 있는 클래스
+
+ex) 함수와 같은 무상태 객체, 설계상 유일해야 하는 시스템 컴포넌트
+
+클래스를 싱글턴으로 만들면 이를 사용하는 클라이언트를 테스트하기가 어려워질 수 있음.
