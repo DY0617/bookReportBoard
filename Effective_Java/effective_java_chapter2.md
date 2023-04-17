@@ -554,4 +554,33 @@ private 생성자 추가는 상속을 불가능하게 하는 효과도 있음.
 
 # 자원을 직접 명시하지 말고 의존 객체 주입을 사용하라
 
+맞춤법 검사기는 사전에 의존하는데, 이런 클래스를 정적 유틸리티 클래스나 싱글턴으로 구현한 모습을 드물지 않게 볼 수 있음.
+
+```java
+//정적 유틸리티를 잘못 사용한 예 - 유연하지 않고 테스트하기 어려움.
+public class SpellChecker{
+  private static final Lexicon directionary=...;
+  
+  private SpellChecker(){}
+  
+  public static boolean isValid(String word){ ... }
+  public static List<String> suggestions(String typo){ ... }
+}
+```
+
+```java
+//싱글턴 잘못 사용한 예 - 유연하지 않고 테스트하기 어려움.
+public class SpellChecker{
+  private final Lexicon directionary=...;
+  
+  private SpellChecker(...){}
+  public static SpellChecker INSTANCE= new SpellChecker(...);
+  
+  public static boolean isValid(String word){ ... }
+  public static List<String> suggestions(String typo){ ... }
+}
+```
+
+사전 하나로 실전을 모두 대응하기 어려움.
+
 사용하는 자원에 따라 동작이 달라지는 클래스에는 정적 유틸리티 클래스나 싱글턴 방식이 적합하지 않다.
