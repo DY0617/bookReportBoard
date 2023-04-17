@@ -583,4 +583,32 @@ public class SpellChecker{
 
 사전 하나로 실전을 모두 대응하기 어려움.
 
+Spellchecker가 여러 사전을 사용할 수 있도록 만들기 위해서는?
+
+dictionalry 필드에서 final 한정자를 제거하고, 다른 사전으로 교체하는 메서드를 추가한다면?
+
+이 방식은 어색하고, 오류를 내기 쉬우며, 멀티스레드 환경에서는 쓸 수 없음.
+
 사용하는 자원에 따라 동작이 달라지는 클래스에는 정적 유틸리티 클래스나 싱글턴 방식이 적합하지 않다.
+
+---
+
+클래스(Spellchecker)가 여러 자원 인스턴스를 지원해야 하며, 클라이언트가 원하는 자원(dictionary)을 사용해야 함.
+
+**인스턴스를 생성할 때 생성자에 필요한 자원을 넘겨주는 방식이 이를 만족함**
+- 의존 객체 주입의 한 형태로, 맞춤법 검사기를 생성할 때 의존 객체인 사전을 주입해주면 됨.
+
+```java
+//의존 객체 주입은 유연성과 테스트 용이성을 높여준다
+public class SpellChecker{
+  private final Lexicon dictionary;
+  
+  public SpellChecker(Lexion dictionary){
+    this.dictionary=Objects.requrieNonNull(dictionary);
+  }
+  
+  public boolean isValid(String word){ ... }
+  public List<String> suggestions(String typo){ ... }
+}
+```
+
