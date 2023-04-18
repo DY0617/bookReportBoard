@@ -778,3 +778,37 @@ private static long sum(){
 
 # 다 쓴 객체 참조를 해제하라
 
+자바의 가비지 컬렉터가 다 쓴 객체를 알아서 회수해 가기 때문에, 메모리 관리에 더 이상 신경 쓰지 않아도 된다고 오해할 수 있는데, 아니다.
+
+```java
+//누수가 일어나는 위치는?
+public class Stack{
+  private Object[] elements;
+  private int size = 0;
+  private static final int DEFAULT_INITIAL_CAPACITY = 16;
+  
+  public Stack(){
+    elements=new Object[DEFAULT_INITIAL_CAPACITY];
+  }
+  
+  public void push(Object e){
+    ensureCapacity();
+    elements[size++]=e;
+  }
+  
+  public Object pop(){
+    if(size==0){
+      throw new EmptyStackException();
+    }
+    return elements[--size];
+  }
+  
+  private void ensureCapacity(){
+    if(elements.length==size)
+      elements=Arrays.copyOf(elements,2*size+1);
+  }
+}
+```
+
+특별한 문제가 없어 보이지만, 메모리 누수가 숨어있음.
+
