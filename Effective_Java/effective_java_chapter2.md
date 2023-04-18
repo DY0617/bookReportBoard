@@ -664,3 +664,14 @@ Boolean(String) 생성자 대신 Boolean.valueOf(String) 팩터리 메서드를 
 
 가변 객체라 해도 사용 중에 변경되지 않을 것임을 안다면 재사용이 가능함.
 
+---
+
+생성 비용이 아주 비싼 객체도 있음. 이런 비싼 객체가 반복해서 필요하다면 캐싱해서 재사용하는 것이 좋음.
+
+```java
+//정규표현식을 이용한 주어진 문자열이 유효한 로마 숫자인지 확인하는 메서드
+static boolean isRomanNumeral(String s){
+  return s.matches("^(?=.)M*(C[MD]|D?C{0,3})" + "(X[CL]|L?X{0,3})(I[XV]|V?I{0,3})$");
+}
+```
+
