@@ -913,3 +913,41 @@ finalizer는 예측할 수 없고, 상황에 따라 위험할 수 있어 일반�
 
 기본적으로 쓰지 말아야 함.
 
+자바 9에서는 finalizer를 사용 자제 api로 지정하고, cleaner를 그 대안으로 소개함.
+
+하지만 cleaner도 문제가 많음.
+
+---
+
+finalizer와 cleaner는 즉시 수행된다는 보장이 없음.
+
+finalizer와 cleaner로는 제때 실행되어야 하는 작업은 절대 할 수 없다는 뜻.
+
+---
+
+finalizer나 cleaner의 수행 여부조차 보장되지 않음.
+
+따라서 상태를 영구적으로 수정하는 작업에서는 절대 finalizer나 cleaner에 의존해서는 안됨.
+
+System.gc나 System.runFinalization 메서드 또한 finalizer와 cleaner가 실행될 가능성을 높여줄 수는 있지만, 보장해주는 것은 아님.
+
+---
+
+finalizer 동작 중 발생한 예외는 무시되고, 처리할 작업이 남았더라도 그 순간 종료됨.
+
+잡지 못한 예외 때문에 해당 객체는 자칫 마무리가 덜 된 상태로 남을 수 있음.
+
+그리고 다른 스레드가 이처럼 훼손된 객체를 사용하려 한다면 어떻게 동작할지 예측할 수 없음.
+
+---
+
+finalizer와 cleaner는 심각한 성능 문제도 가지고 있음.
+
+finalizer를 사용한 객체를 생성하고 파괴하기 때문에 성능이 굉장히 내려감.
+
+cleaner도 클래스의 모든 인스턴스를 수거하는 형태로 사용하면 성능이 finalizer와 비슷함.
+
+안전망 형태로 사용하면 성능이 훨씬 나아짐(cleaner 한정)
+
+---
+
