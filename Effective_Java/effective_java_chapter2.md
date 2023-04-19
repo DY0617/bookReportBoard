@@ -14,7 +14,8 @@
 
 **정적 팩터리 메서드**
 
-클래스의 인스턴스를 반환하는 정적 메서드.<br>
+클래스의 인스턴스를 반환하는 정적 메서드.
+
 클라이언트가 클래스의 인스턴스를 얻는 전통적인 방법은 public 생성자이지만, 생성자와는 별도로 정적 팩터리 메서드를 제공할 수 있음.
 
 ```java
@@ -22,8 +23,8 @@ public static Boolean valueOf(boolean b){
   return b ? Boolean.TRUE : Boolean.FALSE;
 }
 ```
-기본 타입인 boolean 값을 받아 Boolean 객체 참조로 변환해주는 메서드.
 
+기본 타입인 boolean 값을 받아 Boolean 객체 참조로 변환해주는 메서드.
 
 ---
 
@@ -1027,4 +1028,37 @@ public class Room implements AutoCloseable{
   }
 }
 ```
+
+static으로 선언된 중첩 클래스인 State는 cleaner가 방을 청소할 때 수거할 자원들을 담고 있음.
+
+위 예에서는 방 안의 쓰레기 수를 뜻하는 numJunkPiles 필드가 수거할 자원임.
+
+State는 Runnable을 구현하고 그 안의 run 메서드는 cleanable에 의해 딱 한 번만 호출됨.
+
+cleanable 객체는 Room 생성자에서 cleaner에 Room과 State를 등록할 때 얻음.
+
+run 메서드가 호출되는 상황은 둘 중 하나임
+- Room의 close 메서드를 호출할 때
+- 가비지 컬렉터가 Room을 회수할 때까지 클라이언트가 close를 호출하지 않을 때(cleaner가 실행되지 않을 수도 있음)
+
+<br>
+<br>
+
+State 인스턴스를 절대 Room 인스턴스를 참조해서는 안됨.
+
+Room 인스턴스를 참조할 경우 순환참조가 생겨 가비지 컬렉터가 Room 인스턴스를 회수해갈 기회가 오지 않음.
+
+정적이 아닌 중첩 클래스는 자동으로 바깥 객체의 참조를 갖게 되기 때문에, State가 정적 중첩 클래스임.
+
+람다 역시 바깥 객체의 참조를 갖기 쉬우니 사용하지 않는 것이 좋음.
+
+---
+
+핵심 정리
+
+cleaner는 안전망 역할이나 중요하지 않은 네이티브 자원 회수용으로만 사용하자. 물론 이런 경우라도 불확실성과 성능 저하에 주의해야 한다.
+
+---
+
+# try-finally보다는 try-with-resources를 사용하라
 
