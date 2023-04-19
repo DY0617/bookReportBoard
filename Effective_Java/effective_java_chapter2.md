@@ -974,3 +974,57 @@ AutoCloseable을 구현해주고, 클라이언트에서 인스턴스를 다 쓰�
     close 메서드에서 이 객체는 더 이상 유효하지 않음을 필드에 기록하고, 
     다른 메서드는 이 필드를 검사해서 객체가 닫힌 후에 불렸다면 IllegalStateException 던지기.
 
+---
+
+그렇다면 finalizer와 cleaner는 대체 어디에 쓰는 것일까??
+
+1. 자원의 수요자가 close 메서드를 호출하지 않는 것에 대비한 안전망 역할
+    - 보험의 의미
+    - 쓸만한 값어치가 있는지 생각해보기
+3. 네이티브 피어와 연결된 객체에서의 사용.
+    - 네이티브 피어란??
+        - 일반 자바 객체가 네이티브 메서드를 통해 기능을 위임한 테이티브 객체를 말함
+    - 네이티브 피어는 자바 객체가 아니기 때문에 가비지 컬렉터가 그 존재를 모르고, 자바 피어를 회수할 때 네이티브 객체까지 회수하지 못함. finalizer와 cleaner를 사용하기 적당한 작업임.
+    - 하지만 성능 저하를 감당할 수 없거나 네이티브 피어가 사용하는 자원을 즉시 회수해야 한다면 close 메서드를 사용해야 함.
+
+---
+
+```java
+//cleaner를 안전망으로 활용하는 AutoColseable 클래스
+public class Room implements AutoCloseable{
+  private static final Cleaner cleaner=Cleaner.create();
+  
+  //청소가 필요한 자원. 절대 Room을 참조해서는 안됨.
+  private static class State implements Runnable{
+    int numJunkPiles;
+    
+    State(int numJunkPiles){
+      this.numJunkPiles=numJunkPiles;
+    }
+    
+    //close 메서드나 cleaner가 호출함.
+    @Override 
+    public void run(){
+      System.out.println("방 청소");
+      numJunkPiles=0;
+    }
+  }
+  
+  //방의 상태, cleanable과 공유함.
+  private final State state;
+  
+  //cleanable 객체. 수거 대상이 되면 방을 청소한다.
+  private final Cleaner.Cleanable cleanable;
+  
+  public Room(int numJunkPiles){
+    state=new State(numJunkPiles);
+    cleanable=cleaner.register(this,state);
+  }
+  
+  @Override
+  public void close(){
+    cleanable.clean();
+  }
+}
+```
+
