@@ -901,3 +901,15 @@ ex) WeakHashMap
 
 # finalizer와 cleaner 사용을 피하라
 
+자바는 두 가지 객체 소멸자를 제공함.
+- finalizer
+- cleaner
+
+---
+
+finalizer는 예측할 수 없고, 상황에 따라 위험할 수 있어 일반적으로 불필요함.
+
+오동작, 낮은 성능, 이식성 문제의 원인이 되기도 함.
+
+기본적으로 쓰지 말아야 함.
+
