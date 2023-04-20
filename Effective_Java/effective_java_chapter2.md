@@ -1083,3 +1083,35 @@ static String firstLineOfFile(String path) throws IOException{
 
 나쁜 방식은 아니지만, 자원을 하나 더 사용한다면 너무 지저분해짐.
 
+```java
+//자원이 둘 이상이면 지저분해짐
+static void copy(String src, String dst) throws IOException{
+  InputStream in= new FileInputStream(src);
+  try{
+    OutputStream out=new FileOutputStream(dst);
+    try{
+      byte[] buf= new byte[BUFFER_SIZE];
+      int n;
+      while((n=in.read(buf))>=0)
+        out.write(buf,0,n);      
+    }
+    finally{
+      out.close();
+    }
+  }
+  finally{
+    in.close();
+  }
+}
+```
+
+위 코드에서 미묘한 결점이 있음.
+
+기기에서 물리적인 문제가 생긴다면 firstLineOfFile 메서드 안의 readLine 메서드가 예외를 던지고, 같은 예외로 close 메서드도 실패함.
+
+위 상황이면 두번째 예외가 첫 번째 예외를 완전히 집어삼켜 버려, 스택 추적 내역에 첫 번째 예외에 관한 정보는 남지 않게 되어 디버깅이 어려워짐.
+
+---
+
+try-with-resources로 위 문제가 모두 해결됨.
+
