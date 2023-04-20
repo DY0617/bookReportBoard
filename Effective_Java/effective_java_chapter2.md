@@ -1142,3 +1142,26 @@ static void copy(String src, String dst) throws IOException{
 }
 ```
 
+코드가 짧고 읽기 수월하고, 문제를 진단하기도 훨씬 좋음.
+
+firstLineOfFile 메서드에서 readLine과 close 호출 양쪽에서 예외가 발생하면 close에서 발생한 예외는 숨겨지고 readLine에서 발생한 예외가 기록되는데, 숨겨진 예외들도 그냥 버려지지 않고 스택 추적 내역에 숨겨졌다(suppressed)는 꼬리표를 달고 출력됨.
+
+Throwable에 추가된 getSuppressed 메서드를 이용하면 프로그램 코드에서 가져올 수도 있음.
+
+---
+
+try-with-resources에서도 catch 절을 쓸 수 있음.
+
+catch 절 덕분에 try 문을 더 중첩하지 않고도 다수의 예외를 처리 가능.
+
+```java
+try-with-resources를 catch절과 함께 쓰는 모습
+static String firstLineOfFile(String path) throws IOException{
+  try(BufferedReader br=new BufferedReader(new FileReader(path))){
+    return br.readLine();
+  }
+  catch(IOException e){
+    return defaultVal;
+  }
+}
+```
