@@ -1062,3 +1062,7 @@ cleaner는 안전망 역할이나 중요하지 않은 네이티브 자원 회수
 
 # try-finally보다는 try-with-resources를 사용하라
 
+자바 라이브러리에는 close 메서드를 통해 직접 닫아줘야 하는 자원이 많음.
+
+ex) InputStream, OutputStream, java.sql.Connection 등등
+
