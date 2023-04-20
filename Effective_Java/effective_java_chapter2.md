@@ -1115,3 +1115,30 @@ static void copy(String src, String dst) throws IOException{
 
 try-with-resources로 위 문제가 모두 해결됨.
 
+try-with-resources를 사용하려면 해당 자원이 AutoCloseable 인터페이스를 구현해야 함.
+- void를 반환하는 close 메서드 하나만 정의하면 됨.
+
+위 코드를 try-with-resources를 사용해 재작성한 코드.
+
+```java
+//try-with-resources를 사용
+static String firstLineOfFile(String path) throws IOException{
+  try(BufferedReader br=new BufferedReader(new FileReader(path))){
+    return br.readLine();
+  }
+}
+```
+
+```java
+//try-with-resources를 사용해 복수의 자원을 처리
+static void copy(String src, String dst) throws IOException{
+  try(InputStream in=new FileInputStream(src);
+      OutputStream out=new FileOutputStream(dst)){
+    byte[] buf=new byte(BUFFER_SIZE];
+    int n;
+    while((n=in.read(buf))>=0)
+      out.write(buf,0,n);
+  }
+}
+```
+
