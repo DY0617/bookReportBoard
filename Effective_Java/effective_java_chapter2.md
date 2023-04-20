@@ -1066,3 +1066,20 @@ cleaner는 안전망 역할이나 중요하지 않은 네이티브 자원 회수
 
 ex) InputStream, OutputStream, java.sql.Connection 등등
 
+전통적으로 자원이 제대로 닫힘을 보장하는 수단으로 try-finally가 많이 쓰였음.
+
+```java
+//try-finally는 더 이상 자원을 회수하는 최선의 방책이 아님
+static String firstLineOfFile(String path) throws IOException{
+  BufferedReader br=new BufferedReader(new FileReader(path));
+  try{
+    return br.readLine();
+  }
+  finally{
+    br.close();
+  }
+}
+```
+
+나쁜 방식은 아니지만, 자원을 하나 더 사용한다면 너무 지저분해짐.
+
