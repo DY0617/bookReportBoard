@@ -114,3 +114,26 @@ public final class CaseInsensitiveString{
 }
 ```
 
+        CaseInsensitiveString cis= new CaseInsensitiveString("Polish");
+        String s= "polish"
+
+위 코드에서 cis.equals(s)는 true를 반환함.
+
+하지만 Strig의 equals가 CaseInsensitiveString의 존재를 모르기 때문에 s.equals(cis)는 false를 반환함.
+
+        List<CaseInsensitiveString> list=new ArrayList<>();
+        list.add(cis);
+        
+이 다음에 list.contains(s)를 호출하면 jdk 버전에 따라 다른 결과가 나옴.
+
+equals 규약을 어기면 그 객체를 사용하는 다른 객체들이 어떻게 반응할지 알 수 없음.
+
+이 문제를 해결하려면 CaseInsensitiveString의 equals를 String과도 연동하겠다는 마음을 버려야 함.
+
+```java
+@Override
+public boolean equals(Object o){
+    return o instanceof CaseInsensitiveString && ((CaseInsensitiveString) o).s.equalsIgnoreCase(s);
+}
+```
+
