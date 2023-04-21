@@ -42,3 +42,11 @@ public boolean equals(Object o){
 
 그렇다면 equals를 재정의해야 할 때는?
 
+객체 식별성(object identity : 두 객체가 물리적으로 같은가)이 아니라 논리적 동치성을 확인해야 하는데, 상위 클래스의 equals가 논리적 동치성을 비교하도록 재정의되지 않았을 때.
+
+주로 값 클래스들이 여기 해당됨
+
+값 클래스란??
+
+Integer나 String처럼 값을 표현하는 클래스
+
