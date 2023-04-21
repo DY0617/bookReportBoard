@@ -247,3 +247,48 @@ public boolean equals(Object o){
 }
 ```
 
+위 코드는 같은 구현 클래스의 객체와 비교할 때만 true를 반환함.
+
+하지만 리스코프 치환 원칙을 위반함. 사용 불가.
+
+Point의 하위 클래스는 정의상 여전히 Point이므로 어디서든 Point로써 활용될 수 있어야 함.
+
+<br>
+
+구체 클래스의 하위 클래스에서 값을 추가할 방법은 없지만, 괜찮은 우회 방법이 있음.
+
+상속 대신 컴포지션을 사용하라.
+
+Pointer를 상속하는 대신 Point를 ColorPoint의 private 필드로 두고, ColorPoint와 같은 위치의 일반 Point를 반환하는 뷰 메서드를 public으로 추가함.
+
+```java
+public class ColorPoint{
+    private final Point point;
+    private final Color color;
+    
+    public ColorPoint(int x, int y, Color color){
+        point=new Point(x,y);
+        this.color=Objects.requireNonNull(color);
+    }
+    
+    //이 ColorPoint의 Point뷰 반환
+    public Point asPoint(){
+        return point;
+    }
+    
+    @Override
+    public boolean equals(Object o){
+        if(!(o instanceof ColorPoint))
+            return false;
+        ColorPoint cp=(ColorPoint) o;
+        return cp.point.equals(point)&&cp.color.equals(color);
+    }
+    ...
+}
+```
+
+---
+
+**일관성**
+
+두 객체가 같다면 어느 하나 혹은 두 객체 모두가 수정되지 않는 한 앞으로도 영원히 같아야 함.
