@@ -57,3 +57,42 @@ equals가 논리적 동치성을 확인하도록 재정의해두면, 값을 비�
 ---
 
 값 클래스라 해도 값이 같은 인스턴스가 둘 이상 만들어지지 않음을 보장하는 인스턴스 통제 클래스라면 equals를 재정의하지 않아도 됨.
+
+ex) Enum
+
+---
+
+equals 메서드를 재정의할 때는 반드시 일반 규약을 따라야 한다.
+
+Object 명세에 적힌 규약
+
+equals 메서드는 동치관계를 구현하며, 다음을 만족한다.
+- 반사성(reflexivity): null이 아닌 모든 참조 값 x에 대해, x.equals(x)는 true다.
+- 대칭성(symmetry): null이 아닌 모든 참조 값 x,y에 대해, x.equals(y)가 true면 y.equals(x)도 true다.
+- 추이성(transitivity): null이 아닌 모든 참조 값 x,y,z에 대해 x.equals(y)가 true이고 y.equals(z)도 true면 x.equals(z)도 true다.
+- 일관성(consistency): null이 아닌 모든 참조 값 x,y에 대해 x.equals(y)를 반복해서 호출하면 항상 true를 반환하거나 항상 false를 반환한다.
+- null-아님: null이 아닌 모든 참조 값 x에 대해, x.equals(null)은 false이다.
+
+동치관계란??
+
+Equivalence Relation
+
+집합을 서로 같은 원소들로 이뤄진 부분집합으로 나누는 연산. 이 부분집합을 동치류(Equlvalence class : 동치 클래스)라 함.
+
+<br>
+
+**반사성**
+
+객체는 자기 자신과 같아야 한다.
+
+이 요건을 어긴 클래스의 인스턴스를 컬렉션에 넣은 다음 contains 메서드를 호출하면 false를 반환할 것임.
+
+**대칭성**
+
+두 객체는 서로에 대한 동치 여부에 똑같이 답해야 함.
+
+```java
+//대칭성을 위배하는 잘못된 코드
+public final class CaseInsensitiveString{
+}
+```
