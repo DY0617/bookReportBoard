@@ -94,5 +94,23 @@ Equivalence Relation
 ```java
 //대칭성을 위배하는 잘못된 코드
 public final class CaseInsensitiveString{
+    private final String s;
+    
+    public CaseInsensitiveString(String s){
+        this.s=Object.requireNonNull(s);
+    }
+    
+    //대칭성 위배
+    @Override
+    public boolean equals(Object o){
+        if(o instanceof CaseInsensitiveString)
+            return s.equalsIgnoreCase(
+                ((CaseInsensitiveString) o).s);
+        if(o instanceof String)//한 방향으로만 작동함
+            return s.equalsIgnoreCase((String) o);
+        return false;
+    }
+    ...
 }
 ```
+
