@@ -79,13 +79,15 @@ Equivalence Relation
 
 집합을 서로 같은 원소들로 이뤄진 부분집합으로 나누는 연산. 이 부분집합을 동치류(Equlvalence class : 동치 클래스)라 함.
 
-<br>
+---
 
 **반사성**
 
 객체는 자기 자신과 같아야 한다.
 
 이 요건을 어긴 클래스의 인스턴스를 컬렉션에 넣은 다음 contains 메서드를 호출하면 false를 반환할 것임.
+
+---
 
 **대칭성**
 
@@ -137,6 +139,8 @@ public boolean equals(Object o){
 }
 ```
 
+---
+
 **추이성**
 
 첫 번째 객체와 두 번째 객체가 같고, 두 번째 객체와 세 번째 객체가 같다면
@@ -171,6 +175,75 @@ public class ColorPoint extends Point{
         this.color=color;
     }
     ...
+}
+```
+
+equals 메서드를 그대로 둔다면 Point의 구현이 상속되어 생상 정보는 무시한 채 비교를 수행함. 
+
+```java
+//대칭성을 위배한 코드
+@Override
+public boolean equals(Object o){
+    if(!(o instanceof ColorPoint))
+        return false;
+    return super.equals(o) && ((ColorPoint) o).color == color;
+}
+```
+
+이 메서드는 일반 Point를 ColorPoint에 비교한 결과와 그 둘을 바꿔 비교한 결과가 다를 수 있음.
+
+Point의 equals는 색상을 무시하고, ColorPoint의 equals는 입력 매개변수의 클래스 종류가 다르다며 매번 false를 반환할 것.
+
+        Point p = new Point(1,2);
+        ColorPoint cp= new ColorPoint(1,2,Color.RED);
+
+p.equals(cp)는 true를 반환
+cp.equals(p)는 false를 반환
+
+ColorPoint.equals가 Point와 비교할 때는 색상을 무시하도록 한다면?
+
+```java
+//추이성을 위배하는 코드
+@Override
+public boolean equals(Object o){
+    if(!(o instanceof Point))
+        return false;
+
+    if(!(o instanceof ColorPoint))
+        return o.equals(this);
+
+    return super.equals(o)&&((ColorPoint) o).color==color;
+}
+```
+
+이 방식은 대칭성을 지켜주지만 추이성을 깨버림.
+
+        ColorPoint p1= new ColorPoint(1,2,Color.RED);
+        Point p2= new Point(1,2);
+        ColorPoint p3= new ColorPoint(1,2,Color.BLUE);
+
+p1.equals(p2)와 p2.equals(p3)가 true를 반환하지만, p1.equals(p3)는 false를 반환함.
+
+이 코드 방식은 무한 재귀에 빠질 수 있음.
+
+<br>
+
+그렇다면 해법은?
+
+사실 이 현상은 모든 객체 지향 언어의 동치관계에서 나타나는 근본적인 문제임.
+
+구체 클래스를 확장해 새로운 값을 추가하면서 equals 규약을 만족시킬 방법은 존재하지 않음.(객체 지향적 추상화의 이점을 포기하지 않는 한에 한함)
+
+이 말은 얼핏 듣기에는 equals 안의 instanceof 검사를 getClass 검사로 바꾸면 규약도 지키고 값도 추가하면서 구체 클래스를 상속할 수 있다는 뜻으로 들림.
+
+```java
+//LSP 위배
+@Override
+public boolean equals(Object o){
+    if(o==null || o.getClass()!=getClass())
+        return false;
+    Point p= (Point) o;
+    return p.x==x&&p.y==y;
 }
 ```
 
