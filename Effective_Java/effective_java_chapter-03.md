@@ -21,7 +21,7 @@ Object에서 final이 아닌 메서드(equals, hashCode, toString, clone, finali
 
 equals 메서드는 재정의하기 쉬워 보이지만 곳곳에 함정이 있어 까다로움.
 
-다음 상황 중 하나에 해당한다면 재정의 하지 말
+다음 상황 중 하나에 해당한다면 재정의 하지 말 것
 - 각 인스턴스가 본질적으로 고유하다.
     - 값을 표현하는 게 아니라 동작하는 개체를 표현하는 클래스가 해당됨.(ex) Thread)
 - 인스턴스의 논리적 동치성(logical equality)을 검사할 일이 없다.
