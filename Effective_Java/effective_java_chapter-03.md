@@ -322,3 +322,101 @@ public boolean equals(Object o){
 
 지금까지 내용을 종합해서 양질의 equals 메서드 구현 방법들 단계별로 정리함.
 
+1. == 연산자를 사용해 입력이 자기 자신의 참조인지 확인한다.
+    - 자기 자신이면 true 반환. 단순 성능 최적화용임.
+2. instanceof 연산자로 입력이 올바른 타입인지 확인한다.
+3. 입력을 올바른 타입으로 형변환한다.
+4. 입력 객체와 자기 자신의 대응되는 핵심 필드들이 모두 일치하는지 하나씩 검사한다.
+    - 모든 필드가 일치하면 true, 그렇지 안핟면 false 반환.
+
+---
+
+float와 double을 제외한 기본 타입 필드는 == 연산자로 비교하고, 참조 타입 필드는 각각의 equals 메서드로, float와 double 필드는 각각 정적 메서드인 Float.compare(float, float)와 Double.compare(double,double)로 비교함.
+
+Float와 Double만 특별한 이유는?
+
+Float.NaN, -0.0f, 특수한 부동소수 값 등을 다루어야 하기 때문.
+
+null도 정상 값으로 취급하는 참조 타입 필드도 있음.
+
+이런 필드는 정적 메서드인 Object.equals(Object,Object)로 비교해 NullPointerException 발생을 예방하기.
+
+앞의 CaseInsensitiveString 예처럼 비교하기 아주 복잡한 필드를 가진 클래스도 있음.
+
+그럴때는 그 필드의 표준형(canonical form)을 저장해둔 후 표준형끼리 비교하면 훨씬 경제적임.
+
+---
+
+어떤 필드를 먼저 비교하느냐가 equals의 성능을 좌우하기도 함.
+
+최상의 성능을 바란다면 다를 가능성이 더 크거나 비교하는 비용이 싼 필드를 먼저 비교하기
+
+---
+
+equals를 다 구현했다면 세 가지만 자문해보기
+- 대칭적인가?
+- 추이성이 있는가?
+- 일관적인가?
+
+자문에서 끝내지 말고 단위 테스트 작성해서 돌려보기
+
+단 equals 메서드를 AutoValue를 이용해 작성했다면 테스트를 생략해도 안심할 수 있음.
+
+반사성과 null-아님도 만족해야 하지만, 이 둘이 문제되는 경우는 거의 X
+
+```java
+//전형적인 equals 메서드의 예
+public final class PhoneNumber{
+    private final short areaCode,prefix,lineNum;
+    
+    public PhoneNumber(int areaCode, int prefix, int lineNum){
+        this.areaCode=rangeCheck(areaCode,999,"지역코드");
+        this.prefix=rangeCheck(prefix,999,"프리픽스");
+        this.lineNum=rangeCheck(lineNum,9999,"가입자 번호");
+    }
+    
+    private static short rangeCheck(int val, int max, String arg){
+        if(val<0||val>max)
+            throw new IllegalArgumentException(arg+": "+val);
+        return (short)val;
+    }
+    
+    @Override
+    public boolean equals(Object o){
+        if(o==this)
+            return true;
+        if(!(o instanceof PhoneNumber))
+            return false;
+        PhoneNumber pn=(PhoneNumber)o;
+        return pn.lineNum==lineNum&&pn.prefix==prefix&&pn.areaCode==areaCode;
+    }
+    ...
+}
+```
+
+---
+
+마지막 주의사항
+
+- equals를 재정의할 땐 hashCode도 반드시 재정의하자
+- 너무 복잡하게 해결하려 들지 말자
+    - 필드들의 동치성만 검사해도 equals 규약을 어렵지 않게 지킬 수 있음.
+- Object 외의 타입을 매개변수로 받는 equals 메서드를 선언하지 말자
+    - 다중정의가 될 수 있음.
+
+---
+
+AutoValue??
+
+구글의 오픈소스로, equals와 hashCode를 작성하고 테스트해줌.
+
+---
+
+핵심 정리
+
+꼭 필요한 경우가 아니면 equals를 재정의하지 말자. 많은 경우에 Object의 equals가 여러분이 원하는 비교를 정확히 수행해준다. 재정의해야 할 때는 그 클래스의 핵심 필드 모두를 빠짐없이, 다섯 가지 규약을 확실히 지켜가며 비교해야 한다.
+
+---
+
+# equals를 재정의하려거든 hashCode도 재정의하라
+
