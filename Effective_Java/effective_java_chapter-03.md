@@ -292,3 +292,33 @@ public class ColorPoint{
 **일관성**
 
 두 객체가 같다면 어느 하나 혹은 두 객체 모두가 수정되지 않는 한 앞으로도 영원히 같아야 함.
+
+가변 객체는 비교 시점에 따라 서로 다를수도 있고 같을수도 있음. 불변 객체는 한번 다르면 끝까지 다르고, 한번 같으면 끝까지 같아야 함.
+
+클래스가 가변이던 불변이던 간에 equals의 판단에 신뢰할 수 없는 자원이 끼어들게 해서는 안됨.
+
+equals는 항시 메모리에 존재하는 객체만을 사용한 결정적(deterministic) 계산만 수행해야 함.
+
+---
+
+**null-아님**
+
+마지막 요건은 공식 이름이 없음. 따라서 null-아님 이라고 표기함.
+
+형변환에 맞서 instanceof 연산자로 입력 매개변수가 올바른 타입인지 검사해야 하기 때문에, 명시적 null 검사를 할 때 if(o==null) 할 필요 없음.
+
+```java
+@Override
+public boolean equals(Object o){
+    if(!(o instanceof MyType){
+        return false;
+    }
+    Mytype mt=(Mytype) o;
+    ...
+}
+```
+
+---
+
+지금까지 내용을 종합해서 양질의 equals 메서드 구현 방법들 단계별로 정리함.
+
