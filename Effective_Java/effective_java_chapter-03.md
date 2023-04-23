@@ -512,3 +512,20 @@ public int hashCode(){
 }
 ```
 
+---
+
+Object 클래스는 임의의 개수만큼 객체를 받아 해시코드를 계산해주는 정적 메서드인 hash를 제공.
+
+하지만 속도가 더 느림.
+
+입력 인수를 담기 위한 배열이 만들어지고, 입력 중 기본 타입이 있다면 박싱과 언박싱도 거쳐야 하기 때문.
+
+hash 메서드는 성능에 민감하지 않은 상황에서만 사용하기
+
+```java
+@Override
+public int hashCode(){
+    return Objects.hash(lineNum, prefix, areaCode);
+}
+```
+
