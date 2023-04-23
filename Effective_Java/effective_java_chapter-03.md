@@ -529,3 +529,51 @@ public int hashCode(){
 }
 ```
 
+---
+
+클래스가 불변이고 해시코드를 계산하는 비용이 크다면 캐싱 활용하기.
+
+이 타입의 객체가 주로 해시의 키로 사용될 것 같다면 인스턴스가 만들어질 때 해시코드를 계산해 둬야 함.
+
+사용되지 않는 경우라면 hashCode가 처음 불릴 때 계산하는 지연 초기화(lazy initialization) 전략 활용도 좋음.
+
+**필드를 지연 초기화하려면 그 클래스를 스레드 안전하게 만들도록 신경써야함(챕터 11 참조)**
+
+```java
+//해시코드를 지연 초기화하는 hashCode 메서드
+//스레드 안전성 고려해야함
+private int hashCode;
+
+@Override
+public int hashCode(){
+    int result=hashCode;
+    if(result==0){
+        result= Short.hashCode(areaCode);
+        result = 31*result+Short.hashCode(prefix);
+        result = 31*result+Short.hashCode(lineNum);
+        hashCode = result;
+    }
+    return result;
+}
+```
+
+---
+
+성능을 높인다고 해시코드를 계산할 때 핵심 필드를 생략해서는 안됨.
+
+해시 품질이 나빠져 해시테이블의 성능을 심각하게 떨어트릴 수도 있음.
+
+<br>
+
+hashCode가 반환하는 값의 생성 규칙을 API 사용자에게 자세히 공표하지 말자. 그래야 클라이언트가 이 값에 의지하지 않게 되고, 추후에 계산 방식을 바꿀 수도 있다.
+
+---
+
+핵심 정리
+
+equals를 재정의할 때는 hashCode도 반드시 재정의해야 한다 .그렇지 않으면 프로그램이 제대로 동작하지 않을 것이다. 재정의한 hashCode는 Object의 API 문서에 기술된 일반 규약을 따라야 하며, 서로 다른 인스턴스라면 되도록 해시코드도 서로 다르게 구현해야 한다. 이렇게 구현하기가 어렵지는 않지만 조금 따분한 일이긴 하다. 하지만 AutoValue 프레임워크를 사용하면 멋진 equals와 hashCode를 자동으로 만들어준다. IDE들도 이런 기능을 일부 제공한다.
+
+---
+
+# toString을 항상 재정의하라
+
