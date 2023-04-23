@@ -489,3 +489,26 @@ hashCode를 다 구현했으면 이 메서드가 동치인 인스턴스에 대�
 
 equals 비교에 사용되지 않은 필드는 **반드시** 제외하기
 
+<br>
+
+단계 2.b의 곱셈 31&#42;result는 필드를 곱하는 순서에 따라 result 값이 달라지게 함. 그 결과 클래스에 비슷한 필드가 여러 개일 때 해시 효과를 크게 높여줌.
+
+String의 hashCode를 곱셈 없이 구현한다면 모든 아나그램의 해시코드가 같아짐.
+
+곱할 숫자가 31인 이유는 31이 홀수이면서 소수이기 때문.
+
+짝수이면서 오버플로가 발생한다면 정보를 잃게 됨.
+
+2를 곱하는 것은 시프트 연산과 같은 결과를 내기 때문.
+
+```java
+//전형적인 hashCode 메서드
+@Override
+public int hashCode(){
+    int result= Short.hashCode(areaCode);
+    result = 31*result+Short.hashCode(prefix);
+    result = 31*result+Short.hashCode(lineNum);
+    return result;
+}
+```
+
