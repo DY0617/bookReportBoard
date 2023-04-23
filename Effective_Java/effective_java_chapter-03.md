@@ -420,4 +420,5 @@ AutoValue??
 
 # equals를 재정의하려거든 hashCode도 재정의하라
 
-equals
+equals를 재정의한 클래스 모두에서 hashCode도 재정의해야 한다.
+
