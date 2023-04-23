@@ -438,3 +438,10 @@ hashCode 재정의를 잘못했을 때 크게 문제가 되는 조항은 두 번
 
 논리적으로 같은 객체는 같은 해시코드를 반환해야 함.
 
+equals는 물리적으로 다른 두 객체를 논리적으로 같다고 할 수 있음. 하지만 Object의 기본 hashCode 메서드는 이 둘이 전혀 다르다고 판단하여, 규약과 달리 서로 다른 값을 반환함.
+
+        Map<PhoneNumber, String> m= new HashMap<>();
+        m.put(new PhoneNumber(707,867,5309),"제니");
+
+이 코드 다음에 m.get(new PhoneNumber(707,867,5309));을 실행하면 "제니"가 나와야 할것 같지만 실제로는 null을 반환함.
+
