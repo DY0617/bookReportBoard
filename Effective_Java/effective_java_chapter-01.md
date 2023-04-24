@@ -1,4 +1,5 @@
-# Effective Java 1장 - 들어가기
+# Effective Java 1장
+# 들어가기
 
 책 내용 전반을 설명해 주는 단락.
 
