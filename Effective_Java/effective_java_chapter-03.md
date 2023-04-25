@@ -709,6 +709,7 @@ Cloneable은 복제해도 되는 클래스임을 명시하는 용도의 믹스�
         
     믹스인이란 클래스가 본인의 기능 이외에 추가로 구현할 수 있는 자료형으로, 
     어떤 선택적 기능을 제공한다는 사실을 선언하기 위해 쓰인다.
+    ex) Comparable 
 
 가장 큰 문제는 clone 메서드가 선언된 곳이 Cloneable이 아닌 Object이고, 그마저도 protect인 데에 있음.
 
@@ -782,4 +783,35 @@ clone을 재정의한 클래스가 final이라면 걱정해야 할 하위 클래
 Object의 clone 구현의 동작 방식에 기댈 필요가 없기 때문.
 
 ---
+
+제대로 동작하는 clone 메서드를 가진 상위 클래스를 상속해 Cloneable을 구현하고 싶다면?
+
+먼저 super.clone() 호출.
+
+모든 필드가 기본 타입이거나 불변 객체를 참조한다면 더이상 손볼 것이 없음.
+
+PhoneNumber의 clone 메서드는 다음처럼 구현할 수 있음.
+
+```java
+//가변 상태를 참조하지 않는 클래스용 clone 메서드
+@Override
+public PhoneNumber clone(){
+    try{
+        return (PhoneNumber) super.clone();
+    }
+    catch(CloneNotSupportedException e){
+        throw new AssertionError();//절대 일어나지 않음.
+    }
+}
+```
+
+이 메서드가 동작하려면 PhoneNumber의 클래스 선언에 Cloneable을 구현한다고 추가해야 함.
+
+Object의 clone 메서드는 Object를 반환하지만 PhoneNumber의 clone 메서드는 PhoneNumber를 반환하게 함.
+
+자바가 공변 반환 타이핑을 지원하니 가능함.
+
+재정의한 메서드의 반환 타입은 상위 클래스의 메서드가 반환하는 타입의 하위 타입일 수 있다는 뜻.
+
+catch절은 Cloneable을 구현했기 때문에 일어날 일이 없기 때문에 비검사 예외였어야 함.
 
