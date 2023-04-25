@@ -882,3 +882,47 @@ clone은 원본 객체에 아무런 해를 끼치지 않는 동시에 복제된 
 }
 ```
 
+elements.clone의 결과를 Object[]로 형변환할 필요는 없음.
+
+배열의 clone은 런타임 타입과 컴파일타임 타입 모두가 원본 배열과 똑같은 배열을 반환함.
+
+따라서 배열을 복제할 때는 배열의 clone 메서드를 사용하라고 권장함.
+
+배열은 clone 기능을 제대로 사용하는 유일한 예라 할 수 있음.
+
+<br>
+
+elements 필드가 final이었다면 앞서의 방식은 작동하지 않음.
+
+final 필드에는 새로운 값을 할당할 수 없기 때문임.
+
+Cloneable 아키텍처는 '가변 객체를 참조하는 필드는 final로 선언하라'는 일반 용법과 충돌함.
+
+그래서 복제할 수 있는 클래스를 만들기 위해 일부 필드에서 final을 제거해야 할 수도 있음.
+
+---
+
+clone을 재귀적으로 호출하는 것만으로는 충분하지 않을 때도 있음.
+
+ex)해시테이블용 clone 메서드
+
+```java
+//해시테이블 클래스
+public class HashTable implements Cloneable{
+    private Entry[] buckets = ...;
+    
+    private static class Entry{
+        final Object key;
+        Object value;
+        Entry next;
+        
+        Entry(Object key, Object value, Entry next){
+            this.key=key;
+            this.value=value;
+            this.next=next;
+        }
+    }
+    //나머지 코드 생략
+}
+```
+
