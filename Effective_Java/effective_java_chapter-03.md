@@ -926,3 +926,75 @@ public class HashTable implements Cloneable{
 }
 ```
 
+버킷 배열의 clone을 재귀적으로 호출한다면?
+
+```java
+//잘못된 clone 메서드
+//가변 상태를 공유함
+@Override
+public HashTable clone(){
+    try{
+        HashTable result=(HashTable) super.clone();
+        result.buckets=buckets.clone();
+        return result;
+    }
+    catch(CloneNotSupportedException e){
+        throw new AssertionError();
+    }
+}
+```
+
+복제본은 자신만의 버킷 배열을 갖지만, 이 배열은 원본과 같은 연결 리스트를 참조하여 원본과 복제본 모두 예기치 않게 동작할 가능성이 생김.
+
+이를 해결하려면 각 버킷을 구성하는 연결 리스트를 복사해야 함.
+
+```java
+//복잡한 가변 상태를 갖는 클래스용 재귀적 clone 메서드
+
+//해시테이블 클래스
+public class HashTable implements Cloneable{
+    private Entry[] buckets = ...;
+    
+    private static class Entry{
+        final Object key;
+        Object value;
+        Entry next;
+        
+        Entry(Object key, Object value, Entry next){
+            this.key=key;
+            this.value=value;
+            this.next=next;
+        }
+        
+        //이 엔트리가 가리키는 연결 리스트를 재귀적으로 복사
+        Entry deepCopy(){
+            return new Entry(key,value,next==null?null:next.deepCopy());
+        }
+    }
+    
+    @Override
+    public HashTable clone(){
+        try{
+            HashTable result=(HashTable) super.clone();
+            result.buckets=new Entry[buckets.length];
+            for(int i=0;i<buckets.length;i++)
+                if(buckets[i]!=null)
+                    result.buckets[i]=buckets[i].deepCopy();
+            return result;
+        }
+        catch(CloneNotSupportedException e){
+            throw new AssertionError();
+        }
+    }
+    
+}
+```
+
+private 클래스인 HashTable.Entry는 깊은복사(deep copy)를 지원하도록 보강됨.
+
+    deep copy? 깊은 복사란?
+    '실제 값'을 새로운 메모리 공간에 복사하는 것을 의미
+    
+    Shallow Copy? 얕은 복사란?
+    '주소 값'을 복사한다는 의미
+
