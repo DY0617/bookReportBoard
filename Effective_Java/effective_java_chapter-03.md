@@ -1038,8 +1038,10 @@ clone이 하위 클래스에서 재정의한 메서드를 호출하면 하위 �
 
 public인 clone 메서드에서는 throws 절을 없애야 함.
 - 검사 예외를 던지지 않아야 그 메서드를 사용하기 편하기 때문.
+
 상속용 클래스는 Cloneable을 구현해서는 안됨.
 - clone 메서드를 재정의해 CloneNotSupportedException()을 던지게 할 것.
+
 Object의 clone메서드는 동기화를 신경쓰지 않았음.
 - 동시성 문제가 발생할 수 있음.
 - super.clone 호출 외에 달리 할 일이 없더라도 clone을 재정의하고 동기화해줘야 함.
