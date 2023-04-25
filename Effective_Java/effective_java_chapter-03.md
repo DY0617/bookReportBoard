@@ -116,15 +116,15 @@ public final class CaseInsensitiveString{
 }
 ```
 
-        CaseInsensitiveString cis= new CaseInsensitiveString("Polish");
-        String s= "polish"
+    CaseInsensitiveString cis= new CaseInsensitiveString("Polish");
+    String s= "polish"
 
 위 코드에서 cis.equals(s)는 true를 반환함.
 
 하지만 Strig의 equals가 CaseInsensitiveString의 존재를 모르기 때문에 s.equals(cis)는 false를 반환함.
 
-        List<CaseInsensitiveString> list=new ArrayList<>();
-        list.add(cis);
+    List<CaseInsensitiveString> list=new ArrayList<>();
+    list.add(cis);
         
 이 다음에 list.contains(s)를 호출하면 jdk 버전에 따라 다른 결과가 나옴.
 
@@ -194,8 +194,8 @@ public boolean equals(Object o){
 
 Point의 equals는 색상을 무시하고, ColorPoint의 equals는 입력 매개변수의 클래스 종류가 다르다며 매번 false를 반환할 것.
 
-        Point p = new Point(1,2);
-        ColorPoint cp= new ColorPoint(1,2,Color.RED);
+    Point p = new Point(1,2);
+    ColorPoint cp= new ColorPoint(1,2,Color.RED);
 
 p.equals(cp)는 true를 반환
 cp.equals(p)는 false를 반환
@@ -218,9 +218,9 @@ public boolean equals(Object o){
 
 이 방식은 대칭성을 지켜주지만 추이성을 깨버림.
 
-        ColorPoint p1= new ColorPoint(1,2,Color.RED);
-        Point p2= new Point(1,2);
-        ColorPoint p3= new ColorPoint(1,2,Color.BLUE);
+    ColorPoint p1= new ColorPoint(1,2,Color.RED);
+    Point p2= new Point(1,2);
+    ColorPoint p3= new ColorPoint(1,2,Color.BLUE);
 
 p1.equals(p2)와 p2.equals(p3)가 true를 반환하지만, p1.equals(p3)는 false를 반환함.
 
@@ -440,8 +440,8 @@ hashCode 재정의를 잘못했을 때 크게 문제가 되는 조항은 두 번
 
 equals는 물리적으로 다른 두 객체를 논리적으로 같다고 할 수 있음. 하지만 Object의 기본 hashCode 메서드는 이 둘이 전혀 다르다고 판단하여, 규약과 달리 서로 다른 값을 반환함.
 
-        Map<PhoneNumber, String> m= new HashMap<>();
-        m.put(new PhoneNumber(707,867,5309),"제니");
+    Map<PhoneNumber, String> m= new HashMap<>();
+    m.put(new PhoneNumber(707,867,5309),"제니");
 
 이 코드 다음에 m.get(new PhoneNumber(707,867,5309));을 실행하면 "제니"가 나와야 할것 같지만 실제로는 null을 반환함.
 
@@ -601,7 +601,7 @@ toString을 제대로 재정의하지 않는다면 쓸모없는 메시지만 로
 
 PhoneNumber용 toString을 제대로 재정의했다면 다음 코드만으로 문제를 진단하기에 충분한 메시지를 남길 수 있음.
 
-        System.out.println(phoneNumber + "에 연결할 수 없습니다.");
+    System.out.println(phoneNumber + "에 연결할 수 없습니다.");
 
 ---
 
@@ -611,8 +611,8 @@ toString은 그 객체가 가진 주요 정보 모두를 반환하는 게 좋음
 
 다음의 테스트 실패 메시지는 toString에 주요 정보가 담기지 않았을 때 문제가 되는 대표적인 예임.
 
-        Assertion failure: expected {abc,123}, but was {abc,123}.
-        // 단언 실패: 예상값 {abc,123}, 실제값 {abc,123}.
+    Assertion failure: expected {abc,123}, but was {abc,123}.
+    // 단언 실패: 예상값 {abc,123}, 실제값 {abc,123}.
 
 toString을 구현할 때면 반환값의 포맷을 문서화할지 정해야 함.
 
@@ -705,10 +705,10 @@ ex) 대다수의 컬렉션 구현체는 추상 컬렉션 클래스들의 toStrin
 
 Cloneable은 복제해도 되는 클래스임을 명시하는 용도의 믹스인 인터페이스(mixin interface)지만, 의도한 목적을 제대로 이루지 못했음.
 
-        믹스인이란?
+    믹스인이란?
         
-        믹스인이란 클래스가 본인의 기능 이외에 추가로 구현할 수 있는 자료형으로, 
-        어떤 선택적 기능을 제공한다는 사실을 선언하기 위해 쓰인다.
+    믹스인이란 클래스가 본인의 기능 이외에 추가로 구현할 수 있는 자료형으로, 
+    어떤 선택적 기능을 제공한다는 사실을 선언하기 위해 쓰인다.
 
 가장 큰 문제는 clone 메서드가 선언된 곳이 Cloneable이 아닌 Object이고, 그마저도 protect인 데에 있음.
 
@@ -716,9 +716,9 @@ Cloneable은 복제해도 되는 클래스임을 명시하는 용도의 믹스�
 
 리플렉션을 사용하면 가능하지만, 100% 성공하는것은 아님.
 
-        리플렉션이란?
+    리플렉션이란?
 
-        리플렉션은 구체적인 클래스 타입을 알지 못하더라도 그 클래스의 메서드, 타입, 변수들에 접근할 수 있도록 해주는 자바 API를 말함.
+    리플렉션은 구체적인 클래스 타입을 알지 못하더라도 그 클래스의 메서드, 타입, 변수들에 접근할 수 있도록 해주는 자바 API를 말함.
 
 하지만 이런 문제점에도 불구하고 Cloneable 방식은 널리 쓰이고 있어 알아두면 좋음.
 
@@ -771,9 +771,9 @@ x.clone().getClass()==x.getClass()
 
 하지만 이 클래스의 하위 클래스에서 super.clone을 호출한다면 잘못된 클래스 객체가 만들어질 것임.
 
-        클래스 B가 클래스 A를 상속할 때, 하위 클래스인 B의 clone은 B 타입 객체를 반환해야 한다.
-        그런데 A의 clone이 자신의 생성자, 즉 new A(...)로 생성한 객체를 반환한다면 B의 clone도 A타입 객체를 반환할 수 밖에 없다.
-        달리 말해  super.clone을 연쇄적으로 호출하도록 구현해두면 clone이 처음 호출된 상위 클래스의 객체가 만들어진다.
+    클래스 B가 클래스 A를 상속할 때, 하위 클래스인 B의 clone은 B 타입 객체를 반환해야 한다.
+    그런데 A의 clone이 자신의 생성자, 즉 new A(...)로 생성한 객체를 반환한다면 B의 clone도 A타입 객체를 반환할 수 밖에 없다.
+    달리 말해  super.clone을 연쇄적으로 호출하도록 구현해두면 clone이 처음 호출된 상위 클래스의 객체가 만들어진다.
 
 clone을 재정의한 클래스가 final이라면 걱정해야 할 하위 클래스가 없으니 이 관례는 무시해도 안전함.
 
