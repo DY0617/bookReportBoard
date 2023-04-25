@@ -853,3 +853,32 @@ public class Stack{
 
 clone 메서드가 단순히 super.clone의 결과를 그대로 반환한다면?
 
+반환된 Stack 인스턴스의 size필드는 올바른 값을 갖겠지만, elements 필드는 원본 Stack 인스턴스와 똑같은 배열을 참조할 것임.
+
+원본이나 복제본 중 하나를 수정하면 다른 하나도 수정되어 불변식을 해치게 됨.
+
+따라서 프로그램이 이상하게 동작하거나 NullPointerException을 던지게 될 것.
+
+<br>
+
+Stack 클래스의 하나뿐인 생성자를 호출한다면 이러한 상황이 일어나지 않음.
+
+clone 메서드는 사실상 생성자와 같은 효과를 냄.
+
+clone은 원본 객체에 아무런 해를 끼치지 않는 동시에 복제된 객체의 불변식을 보장해야 한다는 뜻.
+
+```java
+//가변 상태를 참조하는 클래스용 clone 메서드
+//가장 쉬운 방법은 element 배열의 clone을 재귀적으로 호출해 주는 것.
+@Override public Stack clone(){
+    try{
+        Stack result=(Stack)super.clone();
+        result.elements=elements.clone();
+        return result;
+    }
+    catch(CloneNotSupportedException e){
+        throw new AssertionError();
+    }
+}
+```
+
