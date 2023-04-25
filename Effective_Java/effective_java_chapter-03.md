@@ -998,3 +998,49 @@ private 클래스인 HashTable.Entry는 깊은복사(deep copy)를 지원하도�
     Shallow Copy? 얕은 복사란?
     '주소 값'을 복사한다는 의미
 
+이 방법은 연결리스트를 복제하는 방법으로는 그다지 좋지 않음.
+
+재귀 호출 때문에 리스트의 원소 수만큼 스택 프레임을 소비하여, 리스트가 길면 스택 오버플로를 일으킬 위험이 있기 때문.
+
+해결하려면?
+
+deep copy를 재귀호출 대신 반복자를 써서 순회하기
+
+```java
+//엔트리 자신이 가리키는 연결 리스트를 반복적으로 복사한다.
+Entry deepCopy(){
+    Entry result=new Entry(key,value,next);
+    for(Entry p=result;p.next!=null;p=p.next)
+        p.next=new Entry(p.next.key,p.next.value,p.next.next);
+    return result;
+}
+```
+
+---
+
+복잡한 가변 객체를 복제하는 마지막 방법
+
+super.clone을 호출하여 얻은 객체의 모든 필드를 초기 상태로 설정.
+
+원본 객체의 상태를 다시 생성하는 고수준 메서드들을 호출하기.
+
+HashTable 예에서라면 buckets 필드를 새로운 버킷 배열로 초기화한 다음 원본 테이블에 담긴 모든 키-값 쌍 각각에 대해 복제본 테이블의 put(key,value) 메서드를 호출해 둘의 내용을 똑같이 해주기.
+
+저수준에서 바로 처리할 때보다는 속도가 느리고, Cloneable 아키텍처의 기초가 되는 필드 단위 객체 복사를 우회하기 때문에 전체 Cloneable 아키텍처와는 어울리지 않는 방식이기도 함.
+
+---
+
+생성자에서는 재정의될 수 있는 메서드를 호출하지 않아야 하는데, clone도 같음.
+
+clone이 하위 클래스에서 재정의한 메서드를 호출하면 하위 클래스는 복제 과정에서 자신의 상태를 교정할 기회를 잃게 되어 원본과 복제본의 상태가 달라질 가능성이 큼.
+
+앞의 put(key,value) 메서드는 final이거나 private여야 한다는 뜻.
+
+public인 clone 메서드에서는 throws 절을 없애야 함.
+- 검사 예외를 던지지 않아야 그 메서드를 사용하기 편하기 때문.
+상속용 클래스는 Cloneable을 구현해서는 안됨.
+- clone 메서드를 재정의해 CloneNotSupportedException()을 던지게 할 것.
+Object의 clone메서드는 동기화를 신경쓰지 않았음.
+- 동시성 문제가 발생할 수 있음.
+- super.clone 호출 외에 달리 할 일이 없더라도 clone을 재정의하고 동기화해줘야 함.
+
