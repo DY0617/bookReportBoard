@@ -815,3 +815,12 @@ Object의 clone 메서드는 Object를 반환하지만 PhoneNumber의 clone 메�
 
 catch절은 Cloneable을 구현했기 때문에 일어날 일이 없기 때문에 비검사 예외였어야 함.
 
+---
+
+클래스가 가변 객체를 참조하는 순간 위 구현이 틀어짐.
+
+Stack 클래스를 예로 함.
+
+```java
+
+```
