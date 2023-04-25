@@ -851,3 +851,5 @@ public class Stack{
 }
 ```
 
+clone 메서드가 단순히 super.clone의 결과를 그대로 반환한다면?
+
