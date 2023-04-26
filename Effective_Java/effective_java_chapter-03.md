@@ -1129,7 +1129,6 @@ compareTo의 Object의 equals는 거의 동일함.
 - compareTo는 단순 동치성 비교에 더해 순서까지 비교 가능.
 - 제네릭함.
 
-
       제네릭이란?
       일반적인 코드를 작성하고, 이 코드를 다양한 타입의 객체에 대하여 재사용하는 프로그래밍 기법.
       타입을 파라미터화해서 컴파일시 구체적인 타입이 결정되도록 하는 것.
@@ -1141,4 +1140,33 @@ Compareable을 구현했다는 것은 그 클래스의 인스턴스들에는 자
 그래서 Compareable을 구현한 객체들의 배열은 손쉽게 정렬 가능.
 
     Arrays.sort(a);
+
+검색, 극단값 계산, 자동 정렬되는 컬렉션 관리도 더 쉽게 할 수 있음.
+
+사실상 자바 플랫폼 라이브러리의 모든 값 클래스와 열거 타입이 Compareable을 구현했음.
+
+알파벳, 숫자, 연대 같이 순서가 명확한 값 클래스를 작성한다면 반드시 Comparable 인터페이스를 구현할 것
+
+---
+
+```java
+public interface Comparable<T>{
+    int compareTo(T t);
+}
+```
+
+compareTo 메서드의 일반 규약은 equals 규약과 비슷함.
+
+---
+
+이 객체와 주어진 객체의 순서를 비교한다. 이 객체가 주어진 객체보다 작으면 음의 정수를, 같으면 0을, 크면 양의 정수를 반환한다. 이 객체와 비교할 수 없는 타입의 객체가 주어지면 ClassCastException을 던진다.
+
+다음 설명해서 sgn(표현식) 표기는 수학에서 말하는 부호 함수(signum function)을 뜻하며, 표현식의 값이 음수, 0, 양수일 때 -1, 0, 1을 반환하도록 정의했다.
+
+- Comparable을 구현한 클래스는 모든 x, y에 대해 sng(x.compareTo(y))==-sgn(y.compareTo(x))여야 한다.
+- Comparable을 구현한 클래스는 추이성을 보장해야 한다. 즉 (x.compareTo(y) > 0 && y.compareTo(z) > 0)이면 x.compareTo(z) > 0이다.
+- Compareable을 구현한 클래스는 모든 z에 대해 x.compareTo(y)==0이면 sgn(x.compareTo(z)) ==sgn(y.compareTo(z))다.
+- 이 권고는 필수는 아니지만 지키는게 좋음. (x.compareTo(y)==0)==)x.equals(y))여야 한다. 이 권고를 지키지 않았다면 그 사실을 명시할 것.("주의: 이 클래스의 순서는 equals 메서드와 일관되지 않다.")
+
+---
 
