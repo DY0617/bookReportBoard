@@ -1219,6 +1219,120 @@ public final class CaseInsensitiveString implements Comparable<CaseInsensitiveSt
     public int compareTo(CaseInsensitiveString cis){
         return String.CASE_INSENSITIVE_ORDER.compare(s,cis.s);
     }
+    //나머지 코드 생략
 }
 ```
 
+Compareable&#60;CaseInsensitiveString&#62;을 구현함으로 인해 CaseInsensitiveString의 참조는 CaseInsensitiveString의 참조랑만 비교가 가능함.
+
+Compareable을 구현할 때 일반적으로 따르는 패턴임.
+
+<br>
+
+compareTo 메서드에서 관계 연산자 &#60;과 &#62;를 사용하지 말것.
+
+박싱된 기본 타입 클래스들에 새로 추가된 정적 메서드 compare를 사용하기.
+
+<br>
+
+핵심 필드가 여러 개라면?
+
+어느것을 먼저 비교하느냐가 중요함.
+
+```java
+//기본 타입의 필드가 여럿일 때의 비교자
+public int compareTo(PhoneNumber ph){
+    int result=Short.compare(areaCode,pn.areaCode);
+    if(result==0){
+        result=Short.compare(prefix,pn.prefix);
+        if(result==0)
+            result=Short.compare(lineNum,pn.lineNum);
+    }
+    return result;
+}
+```
+
+자바 8에서는 Comparator 인터페이스가 일련의 비교자 생성 메서드(comparator construction method)와 팀을 꾸려 메서드 연쇄 방식으로 비교자를 생성할 수 있게 되었음. 
+
+그리고 이 비교자들을 Comparable 인터페이스가 원하는 compareTo 메서드를 구현하는 데 활용할 수 있음.
+
+하지만 약간의 성능 저하가 뒤따름.
+
+참고로, 자바의 정적 임포트 기능을 이용하면 정적 비교자 생성 메서드들을 그 이름만으로 사용할 수 있어 코드가 훨씬 깔끔해짐.
+
+```java
+//비교자 생성 메서드를 활용한 비교자
+public class PhoneNumber implements Comparable<PhoneNumber> {
+    private static final Comparator<PhoneNumber> COMPARATOR = comparingInt((PhoneNumber phoneNumber) -> phoneNumber.areaCode)
+            .thenComparingInt(phoneNumber -> phoneNumber.prefix)
+            .thenComparingInt(phoneNumber -> phoneNumber.lineNum);
+
+    private Short areaCode;
+    private Short prefix;
+    private Short lineNum;
+
+
+    public int compareTo(PhoneNumber phoneNumber) {
+        return COMPARATOR.compare(this, phoneNumber);
+    }
+}
+```
+
+---
+
+Compareator는 많은 보조 생성 메서드들을 가지고 있음.
+
+long과 double용 compareingInt, thenComparingInt의 변형 메서드.
+
+short같은 작은 정수 타입에는 int용 버전 사용.
+
+float는 double용 사용.
+
+---
+
+객체 참조용 비교자 생성 메서드도 있음.
+
+comparing이라는 정적 메서드 2개가 다중정의되어 있음.
+- 첫 번째는 키 추출자를 받아서 그 키의 자연적 순서를 사용.
+- 두 번째는 키 추출자 하나와 추출된 키를 비교할 비교자까지 총 2개의 인수를 받음.
+
+thenComparing이란 인스턴스 메서드가 3개 다중정의되어 있음.
+- 첫 번째는 비교자 하나만 인수로 받아 그 비교자로 부차 순서를 정한다.
+- 두 번째는 키 추출자를 인수로 받아 그 키의 자연적 순서로 보조 순서를 정한다.
+- 세 번째는 키 추출자 하나와 추출된 키를 비교할 비교자까지 총 2개의 인수를 받는다.
+
+값의 차를 기준으로 첫 번째 값이 두 번째 값보다 작으면 음수를, 두 값이 같으면 0을, 첫 번째 값이 크면 양수를 반환하는 compareTo나 compare 메서드의 주의할 점.
+
+```java
+//해시코드 값의 차를 기준으로 하는 비교자
+//추이성이 위배됨
+static Comparator<Object> hashCodeOrder=new Comparator<>(){
+    public int compare(Object o1, Object o2){
+        return o1.hashCode()-o2.hashCode();
+    }
+};
+```
+
+위 방식은 정수 오버플로를 일으키거나 부동소수점 계산 방식에 따른 오류를 낼 수 있음.
+
+대신 다음처럼 구현할 것.
+
+```java
+//정적 compare 메서드를 활용한 비교자
+static Comparator<Object> hashCodeOrder=new Comparator<>(){
+    public int compare(Object o1, Object o2){
+        return Integer.compare(o1.hashCode(),o2.hashCode());
+    }
+};
+```
+
+```java
+//비교자 생성 메서드를 활용한 비교자
+static Comparator<Object> hashCodeOrder= Comparator.comparingInt(o->o.hashCode());
+```
+
+---
+
+핵심 정리
+
+순서를 고려해야 하는 값 클래스를 작성한다면 꼭 Comparable 인터페이스를 구현하여, 그 인스턴스들을 쉽게 정렬하고, 검색하고, 비교 기능을 제공하는 컬렉션과 어우러지도록 해야 한다. compareTo 메서드에서 필드의 값을 비교할 때 >와 < 연산자는 쓰지 말아야 한다. 그 대신 박싱된 기본 타입 클래스가 제공하는 정적 compare 메서드나 Comparator 인터페이스가 제공하는 비교자 생성 메서드를 사용하자.
