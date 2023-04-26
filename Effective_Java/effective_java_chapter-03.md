@@ -1170,6 +1170,7 @@ compareTo 메서드의 일반 규약은 equals 규약과 비슷함.
 - Compareable을 구현한 클래스는 모든 z에 대해 x.compareTo(y)==0이면 sgn(x.compareTo(z)) ==sgn(y.compareTo(z))다.
     - 크기가 같은 객체들끼리는 어떤 객체와 비교하더라도 항상 같아야 함.
 - 이 권고는 필수는 아니지만 지키는게 좋음. (x.compareTo(y)==0)==)x.equals(y))여야 한다. 이 권고를 지키지 않았다면 그 사실을 명시할 것.("주의: 이 클래스의 순서는 equals 메서드와 일관되지 않다.")
+    - compareTo 메서드로 수행한 동치성 테스트의 결과가 equals와 같아야 함.
 
 ---
 
@@ -1182,4 +1183,42 @@ compareTo 메서드의 일반 규약은 equals 규약과 비슷함.
 정렬된 컬렉션인 TreeSet과 TreeMap, 검색과 정렬 알고리즘을 활용하는 유틸리티 클래스인 Collections와 Arrays를 잘 사용하려면 compareTo 규약을 지킬것.
 
 ---
+
+Comparable을 구현한 클래스를 확장해 값 컴포넌트를 추가하고 싶다면, 확장하는 대신 독립된 클래스를 만들고 이 클래스에 원래 클래스의 인스턴스를 가리키는 필드를 두자.
+
+그런 다음 내부 인스턴스를 반환하는 뷰 메서드릴 제공하면 됨.
+
+이렇게 하면 바깥 클래스에 우리가 원하는 compareTo 메서드를 구현해넣을 수 있다.
+
+equals와 같은 방식임.
+
+---
+
+compareTo의 작성 요령은 equals와 비슷함.
+
+<br>
+
+Comparable은 타입을 인수로 받는 제네릭 인터페이스기 때문에 compareTo의 메서드 인수 타입은 컴파일타임에 정해짐.
+
+입력 인수의 타입을 확인하거나 형변환할 필요 x
+
+null을 인수로 넣어 호출하면 NullPointerException을 던져야 함.
+
+<br>
+
+CompareTo 메서드는 각 필드의 순서를 비교함.
+
+객체 참조 필드를 비교하려면 compareTo 메서드를 재귀적으로 호출함.
+
+Comparable을 구현하지 않은 필드나 표준이 아닌 순서로 비교해야 한다면 Comparator를 대신 사용.
+
+```java
+//CaseInsensitiveString용 compareTo 메서드
+//자바가 제공하는 비교자를 사용
+public final class CaseInsensitiveString implements Comparable<CaseInsensitiveString>{
+    public int compareTo(CaseInsensitiveString cis){
+        return String.CASE_INSENSITIVE_ORDER.compare(s,cis.s);
+    }
+}
+```
 
