@@ -1164,9 +1164,22 @@ compareTo 메서드의 일반 규약은 equals 규약과 비슷함.
 다음 설명해서 sgn(표현식) 표기는 수학에서 말하는 부호 함수(signum function)을 뜻하며, 표현식의 값이 음수, 0, 양수일 때 -1, 0, 1을 반환하도록 정의했다.
 
 - Comparable을 구현한 클래스는 모든 x, y에 대해 sng(x.compareTo(y))==-sgn(y.compareTo(x))여야 한다.
+    - 두 객체 참조의 순서를 바꿔 비교해도 예상한 결과가 나와야 함.
 - Comparable을 구현한 클래스는 추이성을 보장해야 한다. 즉 (x.compareTo(y) > 0 && y.compareTo(z) > 0)이면 x.compareTo(z) > 0이다.
+    - 첫 번째가 두 번째 보다 크고 두 번째가 세 번째보다 크면 첫 번째는 세 번째보다 커야함.
 - Compareable을 구현한 클래스는 모든 z에 대해 x.compareTo(y)==0이면 sgn(x.compareTo(z)) ==sgn(y.compareTo(z))다.
+    - 크기가 같은 객체들끼리는 어떤 객체와 비교하더라도 항상 같아야 함.
 - 이 권고는 필수는 아니지만 지키는게 좋음. (x.compareTo(y)==0)==)x.equals(y))여야 한다. 이 권고를 지키지 않았다면 그 사실을 명시할 것.("주의: 이 클래스의 순서는 equals 메서드와 일관되지 않다.")
+
+---
+
+모든 객체에 대해 전역 동치관계를 부여하는 equals 메서드와 달리 compareTo는 타입이 다른 객체를 신경쓰지 않아도 됨.
+
+타입이 다르다면 간단히 ClassCastException을 던져도 됨. 대부분 그렇게 함.
+
+다른 타입 사이의 비교도 허용하지만, 보통은 비교할 객체들이 구현한 공통 인터페이스를 매개로 이뤄짐.
+
+정렬된 컬렉션인 TreeSet과 TreeMap, 검색과 정렬 알고리즘을 활용하는 유틸리티 클래스인 Collections와 Arrays를 잘 사용하려면 compareTo 규약을 지킬것.
 
 ---
 
