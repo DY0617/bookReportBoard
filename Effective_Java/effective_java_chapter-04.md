@@ -172,3 +172,49 @@ ex) public static final int MAX_SIZE = 16;
 public static final Thing[] VALUES = {...};
 ```
 
+해결책은?
+
+```java
+//앞 코드의 public 배열을 private으로 만들고 public 불변 리스트를 추가하는 것.
+private static final Thing[] VALUES = {...};
+public static final List<Thing> VALUE = Collections.unmodifiableList(Arrays.asList(PRIVATE_VALUES));
+```
+
+```java
+//배열을 private으로 만들고 그 복사본을 반환하는 public 메서드를 추가하는 방법
+//방어적 복사라고 불림
+private static final Thing[] VALUES = {...};
+public static final List<Thing> VALUE(){
+    return PRIVATE_VALUES.clone();
+}
+```
+
+---
+
+패키지 : 클래스들의 묶음.
+모듈 : 패키지들의 묶음.
+
+클래스가 패키지의 묶음이듯 모듈은 패키지의 묶음이다. 모듈은 속하는 패키지중 공개할 것들을 선언(module-info.java 파일에)한다.
+
+protected 혹은 public 멤버라도 해당 패키지를 공개하지 않았다면 모듈 외부에서 접근이 불가능하다. 물론 모듈 안에서 공개(exports)로 선언했는지에 영향을 받지 않는다.
+
+모듈 시스템을 사용하면 클래스를 외부에 공개하지 않고 같은 모듈을 이루는 패키지 사이에서는 자유롭게 공유할 수 있다.
+
+앞서 다룬 4개의 기존 접근수준과 달리 모듈에 적용되는 새로운 두 접근 수준은 상당히 주의해서 사용해야 한다.
+
+모듈의 jar파일을 애플리케이션의 클래스패스(classpath)에 두면 그 모듈안의 모든 패키지는 마치 모듈이 없는 것처럼 행동한다. 즉, 모듈이 공개됐는지 여부와 관계없이 public 클래스가 선언한 모든 public 혹은 protected 멤버를 모듈 밖에서도 접근할 수 있게 된다.
+
+이 접근수준을 적극적으로 활용한 대표적인 예시로 JDK가 있다. 자바 라이브러리에서 공개하지 않은 패키지들은 해당 모듈 밖에서는 절대로 접근이 불가능하다.
+
+**JDK 외에도 모듈 개념이 널리 받아들여질지 예측하기에는 아직 이른 감이 있음. 그러니 꼭 필요한 경우가 아니라면 당분간은 사용하지 않는 것이 좋음.**
+
+---
+
+핵심 정리
+
+프로그램 요소의 접근성은 가능한 한 최소한으로 하라. 꼭 필요한 것만 골라 최소한의 public API를 설계하자. 그 외에는 클래스, 인터페이스, 멤버가 의도치 않게 API로 공개되는 일이 없도록 해야 한다. public 클래스는 상수용 public static final 필드 외에는 어떠한 public 필드도 가져서는 안된다. public static final 필드가 참조하는 객체가 불변인지 확인하라.
+
+---
+
+# public 클래스에서는 public 필드가 아닌 접근자 메서드를 사용하라
+
