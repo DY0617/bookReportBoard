@@ -432,3 +432,19 @@ public final class Complex{
 
 ---
 
+불변 객체는 근본적으로 스레드 안전하여 따로 동기화할 필요가 없음.
+
+클래스를 스레드 안전하게 만드는 가장 쉬운 방법이 불변 객체로 만드는 것임.
+
+불변 객체에 대해서는 그 어떤 스레드도 다른 스레드에 영향을 줄 수 없으니 불변 객체는 안심하고 공유할 수 있다.
+
+따라서 불변 클래스라면 한번 만든 인스턴스를 최대한 재활용하기를 권함.
+
+ex)자주 쓰이는 값들을 상수(public static final)로 제공하기
+
+```java
+public static final Complex ZERO = new Complex(0,0);
+public static final Complex ONE  = new Complex(1,0);
+public static final Complex I    = new Complex(0,1);
+```
+
