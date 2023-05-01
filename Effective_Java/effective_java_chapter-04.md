@@ -546,3 +546,59 @@ moby=moby.flipBit(0);
 
 ---
 
+앞으로 불변 클래스를 만드는 또 다른 설계 방법을 설명함.
+
+<br>
+
+클래스가 불변임을 보장하려면 자신을 상속하지 못하게 해야 함.
+
+자신을 상속하지 못하게 하는 가장 쉬운 방법은 final 클래스로 선언하는 것,
+
+하지만 더 유연한 방법이 있음.
+
+모든 생성자를 private 혹은 package-private으로 만들고 public 정적 팩터리를 제공하는 방법.
+
+```java
+//생성자 대신 정적 팩터리를 사용한 불변 클래스
+public class Complex{
+    private final double re;
+    private final double im;
+    
+    private Complex(double re, double im){
+        this.re=re;
+        this.im=im;
+    }
+    
+    public static Complex valueOf(double re, double im){
+        return new Complex(re,im);
+    }
+    
+    ...//나머지 생략
+}
+```
+
+바깥에서 볼 수 없는 package-private 구현 클래스를 원하는 만큼 만들어 활용할 수 있으니 훨씬 유연함.
+
+패키지 바깥의 클라이언트에서 바라본 이 불변 객체는 사실상 final임.
+
+public이나 protected 생성자가 없으니 다른 패키지에서는 이 클래스를 확장하는게 불가능하기 때문임.
+
+---
+
+신뢰할 수 없는 하위 클래스의 인스턴스라고 확인되면, 이 인수들은 가변이라 가정하고 방어적으로 복사해 사용해야 한다.
+
+```java
+//방어적 복사
+public static BigInteger safeInstance(BigInteger val){
+    return val.getClass()==BigInteger.class ? val:new BigInteger(val.toByteArray());
+}
+```
+
+---
+
+초반 불변 클래스의 규칙에, 모든 필드가 final이고 어떤 메서드도 그 객체를 수정할 수 없어야 한다 했는데,
+
+이 규칙은 좀 과한 감이 있어서 다음처럼 살짝 완화될 수 있음.
+
+"어떤 메서드도 객체의 상태 중 외부에 비치는 값을 변경할 수 없다."
+
