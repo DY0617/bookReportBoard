@@ -759,5 +759,71 @@ HashSet이 addAll을 더 이상 호출하지 않아 항상 결과가 옳다는 �
 
 기존 클래스를 확장하는 대신, 새로운 클래스를 만들고 private 필드로 기존 클래스의 인스턴스를 참조하게 하기.
 
-기존 클래스가 새로운 클래스의 구성 요소로 쓰인다는 뜻에서 이러한 설계를 **컴포지션(composition; 구성)**이라 함.
+기존 클래스가 새로운 클래스의 구성 요소로 쓰인다는 뜻에서 이러한 설계를 **컴포지션(composition; 구성)** 이라 함.
+
+새 클래스의 인스턴스 메서드들은 private 필드로 참조하는 기존 클래스의 대응하는 메서드를 호출해 그 결과를 반환함.
+
+이 방식을 전달(forwarding)이라 하며, 새 클래스의 메서드들을 전달 메서드(forwarding method)라 부름.
+
+그 결과 새로운 클래스는 기존 클래스의 내부 구현 방식의 영향에서 벗어나며, 기존 클래스에 새로운 메서드가 추가되더라도 전혀 영향받지 않음.
+
+```java
+//래퍼 클래스
+//상속 대신 컴포지션을 사용함.
+public class InstrumentedSet<E> extends ForwardingSet<E>{
+    private int addCount=0;
+    
+    public InstrumentedSet(Set<E> s){
+        super(s);
+    }
+    
+    @Override
+    public boolean add(E e){
+        addCount++;
+        return super.add(e);
+    }
+    
+    @Override
+    public boolean addAll(Collection<? extends E> c){
+        addCount+=c.size();
+        return super.addAll(c);
+    }
+    
+    public int getAddCount(){
+        return addCount;
+    }
+    
+}
+```
+
+```java
+//재사용할 수 있는 전달 클래스
+public class ForwardingSet<E> implements Set<E>{
+    private final Set<E> s;
+    
+    public ForwardingSet(Set<E> s){
+        this.s=s;
+    }
+    
+    public void clear(){s.clear();}
+    public boolean contains(Object o){return s.contains(o);}
+    public boolean isEmpty(){return s.isEmpty();}
+    public int size(){return s.size();}
+    public Iterator<E> iterator(){return s.iterator();}
+    public boolean add(E e){return s.ad(e);}
+    public boolean remove(Object o){return s.remove(o)};
+    public boolean containsAll(Collection<?> c){return s.conatinsAll(c);}
+    public boolean addAll(Collection<? extends E> c){return s.addAll(c);}
+    public boolean removeAll(Collection<?> c){return s.removeAll(c);}
+    public boolean retainAll(Collection<?> c){return s.retainAll(c);}
+    public Object[] toArray(){return s.toArray();}
+    public <T> T[] toArray(T[] a){return s.toArray(a);}
+    @Override
+    public booelan equals(Object o){return s.equals(o);}
+    @Override
+    public int hashCode(){return s.hashCode();}
+    @Override
+    public String toString(){return s.toString();}
+}
+```
 
