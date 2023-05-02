@@ -700,3 +700,36 @@ public class InstrumentedHashSet<E> extends HashSet<E>{
 }
 ```
 
+위 클래스는 잘 구현된 것 처럼 보이지만, 제대로 작동하지 않음.
+
+```java
+//addAll 메서드로 원소 3개 더하기
+//정적 팩터리 메서드 List.of로 리스트 생성
+InstrumentedHashSet<String> s=new InstrumentedHashSet<>();
+s.addAll(List.of("틱","틱틱","펑"));
+```
+
+getAddCount 메서드를 호출하면 3을 반환할 것 같지만, 실제로는 6을 반환함.
+
+HashSet의 addAll 메서드가 add 메서드를 사용해 구현되었기 때문임.
+
+addCount 값이 중복해서 더해져 이렇게 됨.
+
+이 경우 하위 클래스에서 addAll 메서드를 재정의하지 않으면 문제를 고칠 수 있음.
+
+하지만 HashSet의 addAll이 add 메서드를 이용해 구현했음을 가정한 해법이라는 한계를 지님.
+
+<br>
+
+addAll 메서드를 다른 색으로 재정의할 수도 있음.
+
+주어진 컬렉션을 순회하며 원소 하나당 add 메서드를 한 번만 호출하는 것.
+
+HashSet이 addAll을 더 이상 호출하지 않아 항상 결과가 옳다는 점에서 보았을 때 더 낫지만, 문제가 남아있음.
+
+상위 클래스의 메서드 동작을 다시 구현하는 이 방식은 어렵고 시간도 더 들고 오류를 내거나 성능을 떨어트릴 수도 있음.
+
+하위 클래스에서는 접근할 수 없는 private 필드를 써야 하는 상황이라면 이 방식으로는 구현이 불가함.
+
+---
+
