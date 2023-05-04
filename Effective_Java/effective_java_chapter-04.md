@@ -1200,8 +1200,61 @@ int값과 Integer 인스턴스 사이의 변환 때문에 성능은 그리 좋�
 
     시뮬레이트한 다중 상속(simulated multiple inheritance)?
     
-    골격 구현 클래스를 우휘적으로 이용
+    골격 구현 클래스를 우회적으로 이용
     
     인터페이스를 구현한 클래스에서 해당 골격 구현을 확장한 private 내부 클래스를 정의하고,
     각 메서드 호출을 내부 클래스의 인스턴스에 전달하는 것.
+
+---
+
+골격 구현 작성은 상대적으로 쉬움.
+
+1. 인터페이스를 잘 살펴 다른 메서드들의 구현에 사용되는 기반 메서드들을 선정.
+2. 기반 메서드들을 사용해 직접 구현할 수 있는 메서드를 모두 디폴트 메서드로 제공.
+
+만약 인터페이스의 메서드 모두가 기반 메서드와 디폴트 메서드가 된다면, 골격 구현 클래스를 별도로 만들 이유가 없음.
+
+기반 메서드나 디폴트 메서드로 만들지 못한 메서드가 남아 있다면 이 인터페이스를 구현하는 골격 구현 클래스를 하나 만들어 남은 메서드들을 작성해 넣기.
+
+```java
+//골격 구현 클래스
+//Map.Entry 인터페이스
+//getKey, getValue는 기반 메서드
+//Object 메서드들은 디폴트 메서드로 제공해서는 안 되므로
+//해당 메서드들은 모두 골격 구현 클래스에 구현함.
+public abstract class AbstractMapEntry<K,V> implements Map.Entry<K,V>{
+    
+    //변경 가능한 엔트리는 이 메서드를 반드시 재정의해야 한다
+    @Override
+    public V setValue(V value){
+        throw new UnsupportedOperationException();
+    }
+    
+    //Map.Entry.equals의 일반 규약을 구현
+    @Override 
+    public boolean equals(Object o){
+        if(o==this)
+            return true;
+        if(!(o instanceof Map.Entry))
+            return false;
+        Map.Entry<?,?> e=(Map.Entry) o;
+        return Objects.equals(e.getKey(),getKey()) && Objects.equals(e.getValue(), getValue());
+    }
+    
+    //Map.Entry.hashCode의 일반 규약 구현
+    @Override
+    public int hashCode(){
+        return Objects.hahsCode(getKey()) ^ Objects.hashCode(getValue());
+    }
+    
+    @Override
+    public String toString(){
+        return getKey()+"="+getValue();
+    }
+}
+
+//Map.Entry 인터페이스나 그 하위 인터페이스로는 이 골격 구현을 제공할 수 없다.
+//디폴트 메서드는 equals, hashCode, toString같은 Object 메서드를 재정의할 수 없기 때문이다.
+
+```
 
