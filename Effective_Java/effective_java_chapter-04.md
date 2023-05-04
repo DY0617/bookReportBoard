@@ -1156,3 +1156,52 @@ public interface SingerSongWriter extends Singer,SongWriter{
 
 ---
 
+제대로 설계했다면 골격 구현은 그 인터페이스로 나름의 구현을 만들려는 프로그래머의 일을 상당히 덜어줌.
+
+```java
+//골격 구현을 사용해 완성한 구체 클래스
+static List<Integer> intArrayAsList(int[] a){
+    Objects.requireNonNull(a);
+    
+    return new AbstractList<>(){
+        @Override
+        public Integer get(int i){
+            return a[i];//오토박싱
+        }
+        
+        @Override
+        public Integer set(int i, Integer val){
+            int oldVal=a[i];
+            a[i]=val;//오토박싱
+            return oldVal;//오토언박싱
+        }
+        
+        @Override
+        public int size(){
+            return a.length;
+        }
+    };
+}
+```
+
+이 예는 int 배열을 받아 Integer 인스턴스의 리스트 형태로 보여주는 어댑터(디자인 패턴)이기도 함.
+
+int값과 Integer 인스턴스 사이의 변환 때문에 성능은 그리 좋지 않음.
+
+---
+
+골격 구현 클래스는 추상 클래스처럼 구현을 도와주기도 하고, 추상 클래스로 타입을 정의할 때 따라오는 심각한 제약에서 자유로움.
+
+골격 구현을 확장하는 것으로 인터페이스 구현이 거의 끝나지만, 꼭 이렇게 해야하는 것은 아님.
+
+구조상 골격 구현을 확장하지 못하는 처지라면 인터페이스를 직접 구현해야 함.
+
+이런 경우라도 디폴트 메서드의 이점을 여전히 누릴 수 있음.
+
+    시뮬레이트한 다중 상속(simulated multiple inheritance)?
+    
+    골격 구현 클래스를 우휘적으로 이용
+    
+    인터페이스를 구현한 클래스에서 해당 골격 구현을 확장한 private 내부 클래스를 정의하고,
+    각 메서드 호출을 내부 클래스의 인스턴스에 전달하는 것.
+
