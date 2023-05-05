@@ -1774,3 +1774,82 @@ class Outer {
 
 # 톱레벨 클래스는 한 파일에 하나만 담으라
 
+소스 파일 하나에 톱레벨 클래스를 여러개 선언하면 아무런 득이 없고, 심각한 위험을 감수해야 함.
+
+한 클래스를 여러 가지로 정의할 수 있으며, 그 중 어느 것을 사용할 지는 어느 소스 파일을 먼저 컴파일하냐에 따라 달라지기 때문.
+
+```java
+//Main 클래스는 다른 톱레벨 클래스 2개(Utensil, Dessert)를 참조함.
+public class Main{
+	public static void main(String[] args){
+		System.out.println(Utensil.NAME+Dessert.NAME);
+	}
+}
+```
+
+Utensil과 Dessert 클래스가 Utensil.java 한 파일에 정의되어있다고 가정함.
+
+```java
+class Utensil{
+	static final String NAME="pan";
+}
+
+class Dessert{
+	static final String NAME="cake";
+}
+```
+
+이 상황에서 Main을 실행하면 pancake를 출력함.
+
+그 다음 Dessert.java 파일을 만들었다고 가정.
+
+```java
+class Utensil{
+	static final String NAME="pot";
+}
+
+class Dessert{
+	static final String NAME="pie";
+}
+```
+
+위 상황에서 javac Main.java Dessert.java 명령으로 컴파일한다면 컴파일 오류가 나고 Utensil과 Dessert 클래스를 중복 정의했다고 알려줌.
+
+하지만 javac Main.java나 javac Main.java Utensil.java 명령으로 컴파일하면 panckae를 출력함.
+
+또한 javac Dessert.java Main.java 명령으로 컴파일하면 potpie를 출력함.
+
+이처럼 컴파일러에 어느 소스 파일을 먼저 건네느냐에 따라 동작이 달라지는 문제가 생김.
+
+---
+
+해결책은?
+
+톱레벨 클래스들을 서로 다른 소스 파일로 분리하는 것.
+
+굳이 여러 톱레벨 클래스를 한 파일에 담고 싶다면 정적 멤버 클래스를 사용하는 방법을 고민해 볼 수 있음.
+
+```java
+//톱레벨 클래스들을 정적 멤버 클래스로 바꿈
+public class Test{
+	public static void main(String[] args){
+		System.out.println(Utensil.NAME+Dessert.NAME);
+	}
+	
+	private static class Utensil{
+		static final String NAME="pan";
+	}
+	
+	private static class Dessert{
+		static final String NAME="cake";
+	}
+}
+```
+
+---
+
+핵심 정리
+
+교훈은 명확하다. 소스 파일 하나에는 반드시 톱레벨 클래스(혹은 톱레벨 인터페이스)를 하나만 담자. 이 규칙만 따른다면 컴파일러가 한 클래스에 대한 정의를 여러 개 만들어 내는 일은 사라진다. 소스 파일을 어떤 순서로 컴파일하든 바이너리 파일이나 프로그램의 동작이 달라지는 일은 결코 일어나지 않을 것이다.
+
+---
