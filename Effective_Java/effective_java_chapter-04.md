@@ -1578,4 +1578,3 @@ class Square extends Rectangle{
 
 중첩 클래스(nested clase)란?
 
-	
