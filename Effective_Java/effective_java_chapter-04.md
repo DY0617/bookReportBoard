@@ -1447,6 +1447,8 @@ public class Text{
 //그 중 현재 표현하는 의미를 태그 값으로 알려주는 클래스
 //클래스 계층구조보다 훨씬 나쁨
 class Figure{
+	enum Shape{RECTANGLE, CIRCLE};
+	
 	
 }
 ```
