@@ -1449,6 +1449,130 @@ public class Text{
 class Figure{
 	enum Shape{RECTANGLE, CIRCLE};
 	
+	//태그 필드
+	//현재 모양을 나타냄
+	final Shape shape;
 	
+	//다음 필드들은 모양이 사각형일 때만 쓰인다
+	double length;
+	double width;
+	
+	//다음 필드는 모양이 원일때만 쓰인다
+	double radius;
+	
+	//원 생성자
+	Figure(double radius){
+		shape=Shape.CIRCLE;
+		this.radius=radius;
+	}
+	
+	//사각형 생성자
+	Figure(double length, double width){
+		shape=Shape.RECTANGLE;
+		this.length=length;
+		this.width=width;
+	}
+	
+	double area(){
+		switch(shape){
+			case RECTANGLE:
+				return length*width;
+			case CIRCLE:
+				return Math.PI*(radius*radius);
+			default:
+				throw new AssertionError(shape);
+		}
+	}
 }
 ```
+
+태그 달린 클래스에는 단점이 많음.
+
+- 열거 타입 선언, 태그 필드, switch 문 등 쓸데없는 코드가 많음.
+- 여러 구현이 한 클래스에 혼합돼 있어 가독성이 나쁨.
+- 다른 의미를 위한 코드도 언제나 함께 하니 메모리도 많이 사용함.
+- 필드들을 final로 선언하려면 해당 의미에 쓰이지 ㅇ낳는 필드들까지 생성자에서 초기화해야 함.
+	- 쓰지 않는 필드를 초기화하는 불필요한 코드가 늘어남.
+
+**태그 달린 클래스는 장황하고, 오류를 내기 쉽고, 비효율적임.**
+
+---
+
+더 나은 수단이 있음.
+
+클래스 계층구조를 활용하는 서브타이핑(subtyping)
+
+태그 달린 클래스를 사용할 이유가 X
+
+---
+
+태그 달린 클래스를 클래스 계층구조로 바꾸는 방법
+
+- 먼저 계층구조의 루트가 될 추상 클래스를 정의하고, 태그 값에 따라 동작이 달라지는 메서드들을 루트 클래스의 추상 메서드로 선언.
+	- ex) Figure에서 area가 이러한 메서드임.
+- 다음 태그 값에 상관없이 동작이 일정한 메서드들을 루트 클래스에 일반 메서드로 추가함. 모든 하위 클래스에서 공통으로 사용하는 데이터 필드들도 전부 루트 클래스로 올림.
+	- Figure 클래스에서는 태그 값에 상관없는 메서드가 하나도 없고, 모든 하위 클래스에서 사용하는 공통 데이터 필드도 없어 루트 클래스에는 추상 메서드인 area 하나만 남게 됨.
+- 다음 루트 클래스를 확장한 구체 클래스를 의미별로 하나씩 정의한다.
+	- 예에서는 Figure를 확장한 원 클래스와 사각형 클래스를 만들면 됨.
+	- 각 하위 클래스에는 각자의 의미에 해당하는 데이터 필드를 넣기.
+- 다음 루트 클래스가 정의한 추상 메서드를 각자의 의미에 맞게 구현하기.
+
+```java
+//태그 달린 클래스를 클래스 계층구조로 변환
+abstract class Figure{
+	abstract double area();
+}
+
+class Circle extends Figure{
+	final double radius;
+	
+	Circle(double radius){
+		this.radius=radius;
+	}
+	
+	@Override
+	double area(){
+		return Math.PI*(radius*radius);
+	}
+}
+
+class Rectangle extends Figure{
+	final double length;
+	final double width;
+	
+	Rectangle(double length, double width){
+		this.length=length;
+		this.width=width;
+	}
+	
+	@Override
+	double area(){
+		return length*width;
+	{
+}
+```
+
+단점이 모두 사라짐.
+
+타입 사이의 자연스러운 계층 관계를 반영할 수 있어서 유연성은 물론 컴파일타임 타입 검사 능력을 높여준다는 장점도 있음.
+
+예를 들어 정사각형도 지원하도록 수정하려면 클래스 계층 구조에서는 간단하게 반영할 수 있게 됨.
+
+```java
+class Square extends Rectangle{
+	Square(double side){
+		super(side,side);
+	}
+}
+```
+
+---
+
+핵심 정리
+
+태그 달린 클래스를 써야 하는 상황은 거의 없다. 새로운 클래스를 작성하는 데 태그 필드가 등장한다면 태그를 없애고 계층구조로 대체하는 방법을 생각해보자. 기존 클래스가 태그 필드를 사용하고 있다면 계층구조로 리팩터링하는 걸 고민해보자.
+
+---
+
+# 멤버 클래스는 되도록 static으로 만들라
+
