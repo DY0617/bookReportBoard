@@ -1576,3 +1576,6 @@ class Square extends Rectangle{
 
 # 멤버 클래스는 되도록 static으로 만들라
 
+중첩 클래스(nested clase)란?
+
+	
