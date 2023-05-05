@@ -1276,3 +1276,5 @@ public abstract class AbstractMapEntry<K,V> implements Map.Entry<K,V>{
 
 # 인터페이스는 구현하는 쪽을 생각해 설계하라
 
+디폴트 메서드를 선언하면, 그 인터페이스를 구현한 후 디폴트 메서드를 재정의하지 않은 모든 클래스에서 디폴트 구현이 쓰이게 됨.
+
