@@ -1278,3 +1278,51 @@ public abstract class AbstractMapEntry<K,V> implements Map.Entry<K,V>{
 
 디폴트 메서드를 선언하면, 그 인터페이스를 구현한 후 디폴트 메서드를 재정의하지 않은 모든 클래스에서 디폴트 구현이 쓰이게 됨.
 
+    default method? 
+    
+    인터페이스에 있는 구현 메서드를 의미함.
+
+    기존의 추상 메서드와 다른 점?
+
+    메서드 앞에 default 예약어를 붙인다.
+    구현부 {} 가 있어야 한다.
+    
+    default method Interface 예제 코드
+
+    public interface Interface {
+        // 추상 메서드 
+        void abstractMethodA();
+        void abstractMethodB();
+        void abstractMethodC();
+
+	    // default 메서드
+        default int defaultMethodA(){
+    	    ...
+        }
+    }
+    
+자바 라이브러리의 디폴트 메서드는 코드 품질이 높고 넘용적이라 대부분 상황에서 잘 동작함.
+
+하지만 생각할 수 있는 모든 상황에서 불변식을 해치지 않는 디폴트 메서드를 작성하기 어려움.
+
+```java
+//자바 8의 Collection 인터페이스에 추가된 디폴트 메서드
+//
+//주어진 boolean 함수(predicate;프레디키트)가 true를 반환하는 모든 원소를 제거.
+//디폴트 구현은 반복자를 이용해 순회하면서 각 원소를 인수로 넣어 프레디키트를 호출하고,
+//프레디키트가 true를 반환하면 반복자의 remove 메서드를 호출해 그 원소를 제거함.
+default boolean removeIf(Predicate<? super E> filter){
+    Objects.requireNonNull(filter);
+    boolean result=false;
+    for(Iterator<E> it=iterator();it.hasNext();){
+        if(filter.test(it.next())){
+            it.remove();
+            result=true;
+        }
+    }
+    return result;
+}
+```
+
+좋은 코드이지만, 현존하는 모든 Collection 구현체와 잘 어우러지는 것은 아님.
+
