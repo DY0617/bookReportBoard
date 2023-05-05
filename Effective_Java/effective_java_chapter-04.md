@@ -1407,10 +1407,37 @@ public interface PhysicalConstants{
 	public static final double AVOGADROS_NUMBER	   = 6.022_14-_857e23;
 	
 	//볼츠만 상수(J/K)
-	public static final double BOLTZMANN_CONSTANT  = 1.380_648_52e-23;
+	public static final double BOLTZMANN_CONSTANT      = 1.380_648_52e-23;
 	
 	//전자 질량(kg)
 	public static final double ELECTRON_MASS	   = 9.109_383_56e-31;
 }
 ```
+
+유틸리티 클래스에 정의된 상수를 클라이언트에서 사용하려면 클래스 이름까지 명시해야 함.
+
+ex) PhysicalConstants.AVOGARDROS_NUMBER
+
+유틸리티 클래스의 상수를 빈번히 사용한다면 정적 임포트하여 클래스 이름을 생략 가능함.
+
+```java
+//정적 임포트를 사용해 상수 이름만으로 사용하기
+public class Text{
+	double atoms(double mols){
+		return AVOGADROS_NUMBER*mols;
+	}
+	...
+	//PhysicalConstants를 빈번히 사용한다면 정적 임포트가 값어치를 함.
+}
+```
+
+---
+
+핵심 정리
+
+인터페이스는 타입을 정의하는 용도로만 사용해야 한다. 상수 공개용 수단으로 사용하지 말자.
+
+---
+
+# 태그 달린 클래스보다는 클래스 계층구조를 활용하라
 
