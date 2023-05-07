@@ -110,3 +110,66 @@ private final Collection<Stamp> stamps=...;
 
 List 같은 로 타입은 사용하면 안되지만, List&#60;Object&#62;같은 임의 객체를 허용하는 매개변수화 타입은 사용 가능함.
 
+둘의 차이는?
+
+List는 제네릭 타입에서 완전히 발을 뺀 반면, List&#60;Object&#62;는 모든 타입을 허용한다는 의사를 컴파일러에 명확히 전달한 것임.
+
+List&#60;String&#62;은 로 타입 List의 하위 타입이지만, List&#60;Object&#62;의 하위 타입은 아니기 때문에, 매개변수로 List를 받는 메서드에 List&#60;String&#62;을 넘길 수 있지만, List&#60;Object&#62;를 받는 메서드에는 넘길 수 없음.
+
+결론은, List&#60;Object&#62;같은 매개변수화 타입을 사용할 때와 달리 List 같은 로 타입을 사용하면 타입 안정성을 잃게 된다는 것.
+
+```java
+//unsafeAdd 메서드가 로 타입을 사용함.
+//런타임 실패
+public static void main(String[] args){
+    List<String> strings=new ArrayList<>();
+    unsafeAdd(strings, Integer.valueOf((42));
+    String s=strings.get(0);    //컴파일러가 자동으로 형변환 코드를 넣어줌.
+}
+
+private static void unsafeAdd(List list,Object o){
+    list.add(o);
+}
+```
+
+이 코드는 컴파일은 되지만 로 타입인 List를 사용하여 경고가 발생함.
+
+이 코드를 실행하면 strings.get(0)의 결과를 형변환하려 할 때 ClassCastException을 던짐.
+
+Integer를 String으로 형변환 시도했기 때문.
+
+<br>
+
+그렇다면 List를 List&#60;Object&#62;로 바꾼 다음 다시 실행하면?
+
+이제는 컴파일조차 되지 않음.
+
+---
+
+```java
+//2개의 Set을 받아 공통 원소를 반환하는 메서드
+//모르는 타입의 원소도 받는 로 타입을 사용함.
+static int numElementsInCommon(Set s1, Set s2){
+    int result=0;
+    for(Object o1:s1)
+        if(s2.contains(o1))
+            result++;
+    return result;
+}
+```
+
+이 메서드는 동작은 하지만 로 타입을 사용해 안전하지 않음.
+
+따라서 비한정적 와일드카드 타입(unbounded wildcard type)을 대신 사용하는 게 좋음.
+
+    와일드 카드?
+    
+    제네릭 표시에서 물음표 ? 로 표기되어 있는 것을 말함.
+    아직 알려지지 않은 타입을 나타냄.
+    
+    비한정적 와일드카드 타입?
+    
+    extends나 super 없이 와일드카드인 ?만 사용할 때를 말함.
+    extends나 super를 사용하면 한정적 와일드카드 타입이라 함.
+    ex) List<?>
+
