@@ -108,5 +108,5 @@ private final Collection<Stamp> stamps=...;
 
 ---
 
-List 같은 로 타입은 사용하면 안되지만, List&#60Object&#62같은 임의 객체를 허용하는 매개변수화 타입은 사용 가능함.
+List 같은 로 타입은 사용하면 안되지만, List&#60;Object&#62;같은 임의 객체를 허용하는 매개변수화 타입은 사용 가능함.
 
