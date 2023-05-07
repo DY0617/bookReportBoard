@@ -233,3 +233,18 @@ o의 타입이 Set임을 확인한 다음 와일드카드 타입인 Set&#60;?&#6
 |한글 용어|영문 용어|예|
 |------|---|---|
 |매개변수화 타입|parameterized type|List&#60;String&#62;|
+|실제 타입 매개변수|actual type parameter|String|
+|제네릭 타입|generic type|List&#60;E&#62;|
+|정규 타입 매개변수|formal type parameter|E|
+|비한정적 와일드카드 타입|unbounded wildcard type|List&#60;?&#62;|
+|로 타입|raw type|List|
+|한정적 타입 매개변수|bounded type parameter|&#60;E extends Number&#62;|
+|재귀적 타입 한정|recursive type bound|&#60;T extends Comparable&#60;T&#62;&#62;|
+|한정적 와일드카드 타입|bounded wildcard type|List&#60;? extends Number&#62;|
+|제네릭 메서드|generic method|static &#60;E&#62; List&#60;E&#62; asList(E[] a)|
+|타입 토큰|type token|String.class|
+
+---
+
+# 비검사 경고를 제거하라
+
