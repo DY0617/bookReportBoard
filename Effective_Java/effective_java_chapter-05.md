@@ -232,4 +232,4 @@ o의 타입이 Set임을 확인한 다음 와일드카드 타입인 Set&#60;?&#6
 
 |한글 용어|영문 용어|예|
 |------|---|---|
-|매개변수화 타입|parameterized type|List<String>|
+|매개변수화 타입|parameterized type|List&#60;String&#62;|
