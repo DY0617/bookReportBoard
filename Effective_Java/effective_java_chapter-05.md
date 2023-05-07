@@ -48,6 +48,8 @@
 
 ex) List&#60;String&#62;은 원소의 타입이 String인 리스트를 뜻하는 매개변수화 타입임. 여기서 String이 정규 타입 매개변수 E에 해당하는 실제 타입 매개변수임.
 
+**<> 안에 있는 String은 실제 타입 매개변수, List 인터페이스에 선언되어있는 List의 E를 형식 타입 매개변수라 함.**
+
 ---
 
 제네릭 타입을 하나 정의하면 그에 딸린 로 타입(raw type)도 함께 정의됨.
@@ -61,4 +63,30 @@ List&#60;E&#62;의 로 타입은 List임.
 로 타입은 타입 선언에서 제네릭 타입 정보가 전부 지워진 것처럼 동작하는데, 제네릭이 나오기 전 코드와 호환되도록 하기 위함임.
 
 ---
+
+```java
+//컬렉션의 로 타입
+//좋지 않은 코드임.
+private final Collection stamps=...;
+
+//이 코드를 사용하면 실수로 Stamp 대신 Coin을 넣어도 아무 오류 없이 컴파일되고 실행됨.
+stamps.add(new Coin(...));
+
+//컬렉션에서 이 동전을 꺼내기 전에는 오류를 알아채지 못하게 됨.
+for(Iterator i=stamps.iterator();i.hasNext();){
+    Stamp stamp=(Stamp)i.next();
+    stamp.cancel();
+}
+```
+
+오류는 가능한 한 발생 즉시, 이상적으로는 컴파일할 때 발견하는 것이 좋음.
+
+그 이유로 위 코드는 문제가 많다.
+
+제네릭을 활용하면 이 문제가 깔끔하게 해결됨.
+
+```java
+//매개변수화된 컬렉션 타입
+private final Collection<Stamp> stamps=...;
+```
 
