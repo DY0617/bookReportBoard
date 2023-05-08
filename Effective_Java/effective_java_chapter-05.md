@@ -300,7 +300,7 @@ Set<Lark> exaltation=new HashSet<>();
 public <T> T[] toArray(T[] a){
     if(a.length<size){
         //생성한 배열과 매개변수로 받은 배열의 타입이 모두 T[]로 같으므로 올바른 형변환임.
-        @SuppressWarnings("unchecked:) T[] result=
+        @SuppressWarnings("unchecked") T[] result=
             (T[]) Arrays.copyOf(elements,size,a.getClass());
         return result;
     }
