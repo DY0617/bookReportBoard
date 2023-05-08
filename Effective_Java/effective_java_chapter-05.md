@@ -275,3 +275,39 @@ Set<Lark> exaltation=new HashSet();
 Set<Lark> exaltation=new HashSet<>();
 ```
 
+---
+
+제거하기 훨씬 어려운 경고도 있음.
+
+하지만 할 수 있는 한 모든 비검사 경고를 제거하는 게 좋음.
+
+모두 제거한다면 그 코드는 타입 안정성이 보장됨.
+
+<br>
+
+경고를 제거할 수는 없지만 타입 안전하다고 확신할 수 있으면 @SuppressWarnings("unchecked") 애너테이션을 달아 경고를 숨기자.
+
+이 애너테이션은 개별 지역변수 선언부터 클래스 전체까지 어떤 선언에도 달 수 있지만, 항상 가능한 한 좁은 범위에 적용할 것.
+
+자칫 심각한 경고를 놓칠 수 있으니 절대 클래스 전체에 적용하지 말기.
+
+```java
+//ArrayList에서 가져온 toArray 메서드
+//애너테이션은 선언에만 달 수 있기 때문에 return문에는 @SuppressWarnings 불가.
+//그렇다고 메서드 전체에 애너테이션을 달면 범위가 필요 이상으로 넓어짐.
+//해결방법은?
+//반환값을 담을 지역변수를 하나 선언하고, 그 변수에 애너테이션을 달아주기
+public <T> T[] toArray(T[] a){
+    if(a.length<size){
+        //생성한 배열과 매개변수로 받은 배열의 타입이 모두 T[]로 같으므로 올바른 형변환임.
+        @SuppressWarnings("unchecked:) T[] result=
+            (T[]) Arrays.copyOf(elements,size,a.getClass());
+        return result;
+    }
+    System.arraycopy(elements,0,a,0,size);
+    if(a.length>size)
+        a[size]=null;
+    return a;
+}
+```
+
