@@ -250,3 +250,28 @@ o의 타입이 Set임을 확인한 다음 와일드카드 타입인 Set&#60;?&#6
 
 제네릭을 사용하기 시작하면 비검사 형변환 경고, 비검사 메서드 호출 경고, 비검사 매개변수화 가변인수 타입 경고, 비검사 변환 경고 등 여러 컴파일러 경고를 보게 될 것.
 
+대부분의 비검사 경고는 쉽게 제거가 가능함.
+
+```java
+//잘못 작성한 코드
+Set<Lark> exaltation=new HashSet();
+```
+
+위 코드에서 컴파일러가 다음과 같은 오류를 출력함.(-Xlint:uncheck 옵션을 추가해야 함.)
+
+    Venery.java:4: warning: [unchecked] unchecked conversion Set<Lark> exaltation = new HashSet();
+                                                                                    ^
+    required:   Set<Lark>
+    found:      HashSet
+
+컴파일러가 알려준대로 수정하면 경고가 사라짐.
+
+컴파일러가 알려준 타입 매개변수를 명시하지 않고, 자바 7부터 지원하는 다이아몬드 연산자(<>) 만으로 해결할 수 있음.
+
+다이아몬드 연산자를 사용하면 컴파일러가 올바른 실제 타입 매개변수를 추론해줌.
+
+```java
+//다이아몬드 연산자로 해결
+Set<Lark> exaltation=new HashSet<>();
+```
+
