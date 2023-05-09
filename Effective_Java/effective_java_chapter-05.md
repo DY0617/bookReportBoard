@@ -334,5 +334,19 @@ public <T> T[] toArray(T[] a){
 
     공변? 불공변?
     
+    공변의 뜻은 다음과 같음.
+    함께 변한다는 뜻.
+    Sub가 Super의 하위 타입이라면 배열 Sub[]는 배열 Super[]의 하위 타입이 됨.
     
+    불공변은 다음과 같음.
+    서로 다른 타입 Type1과 Type2가 있을 때 List<Type1>은 List<Type2>의 하위 타입도 아니고 상위 타입도 아니다.
+
+    불공변 or 무공변 (Invariant)	
+    List<String>은 List<Object>의 하위타입이 아니다. 
+    
+    공변 (Covariant)	
+    String 이 Object의 서브타입이면, List<String>은 List<? extend Object> 의 서브타입이다.
+    
+    반공변 (Contravariant)	String 이 Object의 서브타입이면,
+    List<Object>은 List<? super String> 의 서브타입이다.
 
