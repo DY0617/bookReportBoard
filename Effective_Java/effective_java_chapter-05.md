@@ -340,13 +340,36 @@ public <T> T[] toArray(T[] a){
     
     불공변은 다음과 같음.
     서로 다른 타입 Type1과 Type2가 있을 때 List<Type1>은 List<Type2>의 하위 타입도 아니고 상위 타입도 아니다.
+    
+    
+    
 
     불공변 or 무공변 (Invariant)	
-    List<String>은 List<Object>의 하위타입이 아니다. 
+    List<String>은 List<Object>의 하위 타입이 아니다. 
     
     공변 (Covariant)	
-    String 이 Object의 서브타입이면, List<String>은 List<? extend Object> 의 서브타입이다.
+    String 이 Object의 하위 타입이면, List<String>은 List<? extend Object> 의 하위 타입이다.
     
-    반공변 (Contravariant)	String 이 Object의 서브타입이면,
-    List<Object>은 List<? super String> 의 서브타입이다.
+    반공변 (Contravariant)	
+    String 이 Object의 하위 타입이면, List<Object>은 List<? super String> 의 하위 타입이다.
+
+```java
+//런타임에 실패
+//문법에 맞는 코드임
+Object[] objectArray= new Long[1];
+objectArray[0]="타입이 달라 넣을 수 없다.";   //ArrayStoreException
+
+//컴파일 실패
+//문법에 맞지 않는 코드임
+List<Object> ol=new ArrayList<Long>();      //호환되지 않는 타입임.
+ol.add("타입이 달라 넣을 수 없다.");
+```
+
+두 코드 다 Long용 저장소에 String을 넣을 수 없음.
+
+하지만 배열에서는 그 실수를 런타임에서 알게 되고, 리스트는 컴파일 시 바로 알 수 있게 됨.
+
+---
+
+**배열은 실체화(reify)된다.**
 
