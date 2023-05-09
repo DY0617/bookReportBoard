@@ -386,3 +386,25 @@ ol.add("타입이 달라 넣을 수 없다.");
 
 위 두 이유 때문에 배열과 제네릭은 잘 어우러지지 못함.
 
+배열은 제네릭 타입, 매개변수화 타입, 타입 매개변수로 사용할 수 없음.
+
+<br>
+
+타입 안전하지 않기 때문에 제네릭 배열은 만들지 못하게 막음.
+
+이를 허용한다면 컴파일러가 자동 생성한 형변환 코드에서 런타임에 ClassCastException이 발생할 수 있기 때문임.
+
+런타임에 ClassCastException이 발생하는 일을 막아주겠다는 제네릭 타입 시스템의 취지와 어긋남.
+
+```java
+List<String>[] stringLists=new List<String>[1];     //(1)
+List<Integer> intList=List.of(42);                  //(2)
+Object[] objects=stringLists;                       //(3)
+objects[0]=intList;                                 //(4)
+String s=stringLists[0].get(0);                     //(5)
+```
+
+제네릭 배열 생성하는 (1)이 허용된다고 가정해보기.
+
+(2)는 원소가 하나인 List&#60;Integer>를 생성함.
+
