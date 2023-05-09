@@ -408,3 +408,15 @@ String s=stringLists[0].get(0);                     //(5)
 
 (2)는 원소가 하나인 List&#60;Integer>를 생성함.
 
+(3)은 (1)에서 생성한 List&#60;String>의 배열을 Object 배열에 할당함. 배열은 공변이니 성공함.
+
+(4)는 (2)에서 생성한 List&#60;Ingeter>의 인스턴스를 Object 배열의 첫 원소로 저장함. 제네릭은 소거 방식으로 구현되어 이 역시 성공함. 즉 런타임에는 List&#60;Integer> 인스턴스의 타입은 단순히 List가 되고, List&#60;Integer>[] 인스턴스의 타입은 List[]가 된다. 따라서 (4)에서도 ArrayStoreException을 일으키지 않는다.
+
+이제부터 문제가 되는데, List&#60;String> 인스턴스만 담겠다고 선언한 stringLists 배열에는 지금 List&#60;Integer> 변수가 저장되어 있음. 그리고 (5)에서 그를 꺼내려 함.
+
+컴파일러는 꺼낸 원소를 자동으로 String으로 형변환하는데, 이 원소가 Integer이기 때문에 런타임에 ClassCastException이 발생함.
+
+이런 일을 방지하려면 (1)에서 컴파일 오류를 내야 함.
+
+---
+
