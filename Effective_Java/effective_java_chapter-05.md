@@ -443,3 +443,99 @@ E, List&#60;E>, List&#60;String>같은 타입을 실체화 불가 타입(non-rei
 배열로 형변환할 때 제네릭 배열 생성 오류나 비검사 형변환 경고가 뜨는 경우 대부분은 배열인 E[] 대신 컬렉션인 List&#60;E>를 사용하면 해결됨.
 - 코드가 조금 복잡해지고 성능이 살짝 나빠질 수도 있지만, 대신 타입 안전성과 상호운용성은 좋아짐.
 
+---
+
+간단한 예제
+
+```java
+//생성자에서 컬렉션을 받는 Chooser 클래스
+//컬렉션 안의 원소 중 하나를 무작위로 선택해 반환하는 choose 메서드를 제공
+//제네릭을 쓰지 않고 구현함.
+//제네릭의 적용하기 전 코드임.
+public class Chooser{
+    private final Object[] choiceArray;
+    
+    public Chooser(Collection choices){
+        choiceArray=choices.toArray();
+    }
+    
+    public Object choose(){
+        Random rnd=ThreadLocalRandom.current();
+        return choiceArray[rnd.nextInt(choiceArray.length)];
+    }
+}
+```
+
+이 클래스를 사용하려면 choose 메서드를 호출할 때마다 반환된 Object를 원하는 타입으로 형변환해야 함.
+
+다른 타입의 원소가 들어 있었다면 런타임에 형변환 오류가 날 것임.
+
+```java
+//Chooser를 제네릭으로 만들기 위한 첫 시도
+//컴파일되지 않음.
+public class Chooser<T>{
+    private final T[] choiceArray;
+    
+    public Chooser(Collection<T> choices){
+        choiceArray=choices.toArray();
+    }
+    
+    public Object choose(){
+        Random rnd=ThreadLocalRandom.current();
+        return choiceArray[rnd.nextInt(choiceArray.length)];
+    }
+}
+```
+
+이 클래스를 컴파일하면 형변환 오류 메시지가 출력됨.
+
+이는 Object 배열을 T 배열로 형변환하면 됨.
+
+    choiceArray=(T[]) choices.toArray();
+
+그런데 이번에는, T가 무슨 타입인지 알 수 없으니 컴파일러는 이 형변환이 런타임에도 안전한지 보장할 수 없다는 경고 메시지를 보냄.
+
+제네릭에서는 원소의 타입 정보가 소거되어 런타임에는 무슨 타입인지 알 수 없음.
+
+단지 컴파일러가 안전을 보장하지 못할 뿐, 이 프로그램은 동작함.
+
+코드를 작성하는 사람이 안전하다고 확신한다면 주석을 남기고 애너테이션을 달아 경고를 숨겨도 됨.
+
+하지만 비검사 경고를 제거하는 편이 훨씬 좋음.
+
+<br>
+
+비검사 형변환 경고를 제거하려면?
+
+배열 대신 리스트를 사용하기.
+
+```java
+//리스트 기반 Chooser
+//타입 안정성 확보
+//오류,경고 없이 컴파일 된다.
+public class Chooser<T>{
+    private final List<T> choiceList;
+    
+    public Chooser(Collection<T> choices){
+        choiceList=new ArrayList<>(choices);
+    }
+    
+    public T choose(){
+        Random rnd=ThreadLocalRandom.current();
+        return choiceList.get(rnd.nextInt(choiceList.size()));
+    }
+}
+```
+
+코드 양이 조금 늘었고 조금 더 느리지만, 런타임에 ClassCastException을 만날 일은 없으니 그만한 가치가 있음.
+
+---
+
+핵심 정리
+
+배열과 제네릭에는 매우 다른 타입 규칙이 적용된다. 배열은 공변이고 실체화되는 반면, 제네릭은 불공변이고 타입 정보가 소거된다. 그 결과 배열은 런타임에는 타입 안전하지만 컴파일타임에는 그렇지 않다. 제네릭은 반대다. 그래서 둘을 섞어 쓰기란 쉽지 않다. 둘을 섞어 쓰다가 컴파일 오류나 경고를 만나면, 가장 먼저 배열을 리스트로 대체하는 방법을 적용해보자.
+
+---
+
+# 이왕이면 제네릭 타입으로 만들라
+
