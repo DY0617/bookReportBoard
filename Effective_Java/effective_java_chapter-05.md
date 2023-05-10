@@ -632,9 +632,79 @@ public class Stack<E>{
 
 1. 제네릭 배열 생성을 금지하는 제약을 대놓고 우회하기.
 
-    elements = (E[]) new Object[DEFAULT_INITIAL_CAPACITY];
+        elements = (E[]) new Object[DEFAULT_INITIAL_CAPACITY];
 
 컴파일러가 오류 대신 경고를 내보내게 됨.
 
 일반적으로 타입 안전하지 않은 방법임.
+
+배열 elements는 private 필드에 저장되고, 클라이언트로 반환되거나 다른 메서드에 전달되는 일이 전혀 없음. push 메서드를 통해 배열에 저장되는 원소의 타입은 항상 E임.
+
+따라서 위 상황에서 해당 비검사 형변환은 확실히 안전함.
+
+```java
+//배열을 사용한 코드를 제네릭으로 만드는 방법 첫번째
+//배열의 런타임 타입은 E[]가 아닌 Object[]임
+@SuppressWarnings("unchecked")
+public stack(){
+    elements=(E[]) new Object[DEFAULT_INITIAL_CAPACITY];
+}
+```
+
+2. elements 필드의 타입을 E[]에서 Object[]로 바꾸기.
+
+이렇게 되면 첫 번째와는 다른 오류가 발생함.
+
+    E result=elements[--size];
+
+위 코드에서 오류가 발생하게 됨.
+
+배열이 반환한 원소를 E로 형변환하면 오류 대신 경고를 내보내게 됨.
+
+    E result= (E) elements[--size];
+
+E는 실체화 불가 타입이므로 컴파일러는 런타임에 이뤄지는 형변환이 안전한지 증명할 방법이 없음.
+
+본인이 직접 증명하고 경고를 숨겨야 함.
+
+```java
+//배열을 사용한 코드를 제네릭으로 만드는 방법 두번째
+//비검사 경고를 적절히 숨기기
+public E pop(){
+    if(size==0)
+        throw new EmptyStackException();
+    
+    //push에서 E 타입만 허용하므로 이 형변환은 안전함.
+    @SuppressWarnings("unchecked")
+    E result=(E) elements[--size];
+    elements[size]==null;//다 쓴 참조 해제
+    return result;
+}
+```
+
+두 방법 모두 장단점이 있음.
+
+첫 번째 방법은 가독성이 더 좋음. 
+
+배열의 타입을 E[]로 선언해 오직 E 타입 인스턴스만 받음을 확실히 어필함.
+
+코드도 더 짧음.
+
+보통의 제네릭 클래스라면 코드 이곳저곳에서 이 배열을 자주 사용할 것임.
+
+첫 번째 방식에서는 형변환을 배열 생성 시 단 한 번만 해주면 되지만, 두 번째 방식에서는 배열에서 원소를 읽을 때마다 해 줘야 함.
+
+그래서 현업에서는 첫 번째 방법을 더 많이 사용함.
+
+하지만 힙 오염의 위험이 있음.
+
+    힙 오염?
+    
+    JVM의 메모리공간인 Heap Area가 오염된 상태
+    주로 매개변수화 타입의 변수가 타입이 다른 객체를 참조할 때 발생한다. 
+    
+    위 상황에서는 E가 Object가 아닌 한 배열의 런타임 타입이 컴파일타임 타입과 달라 힙 오염을 일으킴.
+    이번 예시에서는 힙 오염이 해가 되지 않음.
+
+---
 
