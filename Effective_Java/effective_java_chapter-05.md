@@ -708,3 +708,49 @@ public E pop(){
 
 ---
 
+```java
+//제네릭 Stack을 사용하는 맛보기 프로그램
+//명령줄 인수들을 역순으로 바꿔 대문자로 출력하는 프로그램임.
+//Stack에서 꺼낸 원소에서 String의 toUpperCase 메서드를 호출할 때
+//명시적 형변환을 수행하지 않음.
+//또한 컴파일러에 의해 자동 생성된 이 형변환이 항상 성공함을 보장하게 됨.
+public static void main(String[] args){
+    Stack<String> stack=new Stack<>();
+    for(String args:args)
+        stack.push(arg);
+    while(!stack.isEmpty())
+        System.out.println(stack.pop().toUpperCase());
+}
+```
+
+---
+
+지금까지 설명한 Stack 예는 배열보다 리스트를 우선하라는 저번 목차와 모순되어 보일 수 있음.
+
+사실 제네릭 타입 안에서 리스트를 사용하는 게 항상 가능하지도 않고, 꼭 더 좋은것도 아님.
+
+자바가 리스트를 기본 타입으로 제공하지 않으므로, ArrayList같은 제네릭 타입도 결국 기본 타입인 배열을 사용해 구현해야 함.
+
+또한 HashMap 같은 제네릭 타입은 성능을 높일 목적으로 배열을 사용하기도 함.
+
+<br>
+
+대다수의 제네릭 타입은 타입 매개변수에 아무런 제약을 두지 않음.
+
+ex) Stack&#60;Object>, Stack&#60;int[]>, Stack&#60;List&#60;String>>, Stack 등등...
+
+하지만 기본 타입을 사용할 수 없음.
+
+Stack&#60;int>나 Stack&#60;double>같은 기본 타입을 이용해서 만들려고 하면 컴파일 오류가 나게 됨.
+
+하지만 박싱된 기본 타입을 이용해 우회할 수 있음.
+
+    왜 기본 타입은 사용할 수 없지?
+    
+    타입 소거(type erasure) 때문
+    
+    타입 소거는 제네릭 타입이 특정 타입으로 제한되어 있을 경우 해당 타입에 맞춰 컴파일시 타입 변경이 발생하고,
+    타입 제한이 없을 경우 Object 타입으로 변경됨.
+    
+    헌데 기본 타입의 경우 Object 클래스를 상속받고 있지 않기 때문에 오류가 발생하게 됨.
+
