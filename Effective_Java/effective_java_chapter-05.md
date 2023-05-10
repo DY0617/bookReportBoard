@@ -543,3 +543,98 @@ JDK가 제공하는 제네릭 타입과 메서드를 사용하는 일은 쉬움.
 
 제네릭 타입을 새로 만드는 일은 조금 더 어렵지만, 배워둘만한 가치가 있음.
 
+```java
+//Object 기반 스택
+//제네릭이면 좋음.
+public class Stack{
+  private Object[] elements;
+  private int size = 0;
+  private static final int DEFAULT_INITIAL_CAPACITY = 16;
+  
+  public Stack(){
+    elements=new Object[DEFAULT_INITIAL_CAPACITY];
+  }
+  
+  public void push(Object e){
+    ensureCapacity();
+    elements[size++]=e;
+  }
+  
+  public Object pop(){
+    if(size==0)
+      throw new EmptyStackException();
+    Object result=elements[--size];
+    elements[size]==null;//다 쓴 참조 해제
+    return result;
+  }
+  
+  public boolean isEmpty(){
+    return size==0;
+  }
+  
+  private void ensureCapacity(){
+    if(elements.length==size)
+      elements=Arrays.copyOf(elements,2*size+1);
+  }
+}
+```
+
+위 클래스는 원래 제네릭 타입이어야 마땅함.
+
+천천히 제네릭으로 만들어 보기.
+
+```java
+//첫 단계로 클래스 선언에 타입 매개변수를 추가하기
+//스택이 담을 원소의 타입 하나 E를 추가하겠음
+//이 상태에서는 컴파일되지 않음.
+public class Stack<E>{
+  private E[] elements;
+  private int size = 0;
+  private static final int DEFAULT_INITIAL_CAPACITY = 16;
+  
+  public Stack(){
+    elements=new E[DEFAULT_INITIAL_CAPACITY];
+  }
+  
+  public void push(E e){
+    ensureCapacity();
+    elements[size++]=e;
+  }
+  
+  public E pop(){
+    if(size==0)
+      throw new EmptyStackException();
+    E result=elements[--size];
+    elements[size]==null;//다 쓴 참조 해제
+    return result;
+  }
+  
+  //isEmpty와 ensureCapacity 메서드는 변화 X
+  
+  public boolean isEmpty(){
+    return size==0;
+  }
+  
+  private void ensureCapacity(){
+    if(elements.length==size)
+      elements=Arrays.copyOf(elements,2*size+1);
+  }
+}
+```
+
+위 단락에서 설명한 것 처럼 E와 같은 실체화 불가 타입으로는 배열을 만들 수 없음.
+
+    elements = new E[DEFAULT_INITIAL_CAPACITY];
+
+하여 위 코드에서 오류가 발생하게 됨.
+
+해결책은?
+
+1. 제네릭 배열 생성을 금지하는 제약을 대놓고 우회하기.
+
+    elements = (E[]) new Object[DEFAULT_INITIAL_CAPACITY];
+
+컴파일러가 오류 대신 경고를 내보내게 됨.
+
+일반적으로 타입 안전하지 않은 방법임.
+
