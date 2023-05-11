@@ -815,3 +815,17 @@ public static <E> Set<E> union(Set<E> s1, Set<E> s2){
 }
 ```
 
+단순한 제네릭 메서드라면 이정도로 충분함.
+
+```java
+//제네릭 메서드를 활용하는 간단한 프로그램
+public static void main(String[] args){
+    Set<String> guys=Set.of("톰","딕","해리");
+    Set<String> stooges=Set.of("래리","모에","컬리");
+    Set<String> aflCio=union(guys,stooges);\
+    System.out.println(alfCio);
+}
+```
+
+이 프로그램을 실행하면 [모에,톰,해리,래리,컬리,딕] 이 출력됨. (원소 순서는 구현 방식에 따라 달라짐)
+
