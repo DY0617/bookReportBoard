@@ -829,3 +829,33 @@ public static void main(String[] args){
 
 이 프로그램을 실행하면 [모에,톰,해리,래리,컬리,딕] 이 출력됨. (원소 순서는 구현 방식에 따라 달라짐)
 
+위 제네릭 메서드 코드에서 union 메서드는 집합 3개의 타입이 모두 같아야 함.
+
+한정적 와일드카드 타입을 사용해 더 유연하게 개선 가능함.
+
+---
+
+때때로 불변 객체를 여러 타입으로 활용할 수 있게 만들어야 할 때가 있음.
+
+제네릭은 런타임에 타입 정보가 소거되므로 하나의 객체를 어떤 타입으로든 매개변수화할 수 있음.
+
+하지만 이렇게 하려면 요청한 타입 매개변수에 맞게 매번 그 객체의 타입을 바꿔주는 정적 팩터리를 만들어야 함.
+
+이 패턴을 제네릭 싱글턴 팩터리라 함.
+
+---
+
+항등함수(identity function)을 담은 클래스를 만들고 싶다고 가정.
+
+```java
+//항등함수 객체는 상태가 없으니 요청할 때 마다 새로 생성하는 것은 낭비.
+//소거 방식 덕분에 제네릭 싱글턴 하나면 충분함.
+//제네릭 싱글턴 팩터리 패턴
+private static UnaryOperator<Object> IDENTITY_FN=(t)->t;
+
+@SuppressWarnings("unchecked")
+public static <T> UnaryOperator<T> identityFunction(){
+    return (UnaryOperator<T>) IDENTITY_FN;
+}
+```
+
