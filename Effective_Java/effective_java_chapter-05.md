@@ -859,3 +859,21 @@ public static <T> UnaryOperator<T> identityFunction(){
 }
 ```
 
+항등함수란 입력 값을 수정 없이 그대로 반환하는 특별한 함수이기 때문에 T가 어떤 타입이든 UnaryOperator&#60;T>를 사용해도 타입 안전함.
+
+
+```java
+//제네릭 싱글턴을 사용하는 예
+public static void main(String[] args){
+    String[] strings={"삼베","대마","나일론"};
+    UnaryOperator<String> sameString=identityFunction();
+    for(String s:strings)
+        System.out.println(sameString.apply(s));
+    
+    Number[] numbers={1,2.0,3L};
+    UnaryOperator<Number> sameNumber=identityFunction();
+    for(Number n:numbers)
+        System.out.println(sameNumber.apply(n));
+}
+```
+
