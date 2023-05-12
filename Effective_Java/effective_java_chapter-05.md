@@ -946,3 +946,26 @@ List&#60;Object>에는 어떤 객체도 넣을 수 있지만, List&#60;String>�
 
 LSP에 어긋남.
 
+하지만 때로는 불공변 방식보다 유연한 무언가가 필요함.
+
+```java
+//Stack 클래스의 public API
+public class Stack<E>{
+    public Stack();
+    public void push(E e);
+    public E pop();
+    public boolean isEmpty();
+}
+```
+
+여기에 일련의 원소를 스택에 넣는 메서드를 추가해야 한다고 해보기
+
+```java
+//와일드카드 타입을 사용하지 않은 pushAll 메서드
+//결함이 있음.
+public void pushAll(Iterable<E> src){
+    for(E e:src)
+        push(e);
+}
+```
+
