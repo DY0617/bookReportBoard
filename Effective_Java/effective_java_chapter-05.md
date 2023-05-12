@@ -936,3 +936,13 @@ public static <E extends Comparable<E>> E max(Collection<E> c){
 
 # 한정적 와일드카드를 사용해 API 유연성을 높이라
 
+매개변수화 타입은 불공변임.
+
+List&#60;String>은 List&#60;Object>의 하위 타입이 아니라는 뜻임.
+
+List&#60;Object>에는 어떤 객체도 넣을 수 있지만, List&#60;String>에는 문자열만 넣을 수 있음.
+
+즉 List&#60;String>은 List&#60;Object>가 하는 일을 제대로 수행하지 못하니 하위 타입이 될 수 없음.
+
+LSP에 어긋남.
+
