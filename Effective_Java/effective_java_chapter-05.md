@@ -969,3 +969,27 @@ public void pushAll(Iterable<E> src){
 }
 ```
 
+Iterable src의 원소 타입이 스택의 원소 타입과 일치하면 잘 동작하지만, Stack&#60;Number>로 선언한 후 int 타입 intVal로 pushAll(intVal)을 호출하면 오류 메시지가 뜸.
+
+Integer는 Number의 하위 타입이니 잘 동작 해야 할 것 같은데, 왜 오류 메시지가 뜰까?
+
+매개변수화 타입이 불공변이기 때문이다.
+
+해결책은?
+
+pushAll의 입력 매개변수 타입은 E의 Iterable이 아니라, E의 하위 타입의 Iterable이어야 함.
+
+와일드카드 타입 Iterable&#60;? extends E>가 이를 뜻함.
+
+```java
+//생산자 매개변수에 와일드카드 타입 적용.
+public void pushAll(Iterable<? extends E> src){
+    for(E e:src)
+        push(e);
+}
+```
+
+이 수정으로 말끔하게 컴파일 됨. 이제 모든 타입에 안전함.
+
+---
+
