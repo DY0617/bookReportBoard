@@ -993,3 +993,14 @@ public void pushAll(Iterable<? extends E> src){
 
 ---
 
+popAll 메서드 작성하기
+
+```java
+//와일드카드 타입을 사용하지 않은 popAll 메서드
+//결함이 있음
+public void popAll(Collection<E> dst){
+    while(!isEmpty())
+        dst.add(pop());
+}
+```
+
