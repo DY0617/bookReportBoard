@@ -1004,3 +1004,27 @@ public void popAll(Collection<E> dst){
 }
 ```
 
+주어진 컬렉션 원소 타입이 스택의 원소 타입과 일치한다면 문제없지만, 아닐 경우 문제가 생김.
+
+Stack&#60;Number>의 원소를 Object용 컬렉션으로 옮기려 한다고 해보기.
+
+    Stack<Number> numberStack=new Stack<>();
+    Collection<Object> objects=...;
+    numberStack.popAll(objects);
+
+이 클라이언트 코드를 앞의 popAll 코드와 함께 컴파일하면 "Collection&#60;Object>는 Collection&#60;Number>의 하위 타입이 아니다"라는, pushAll을 사용했을 때와 비슷한 오류가 발생함.
+
+이번에도 와일드카드 타입으로 해결할 수 있음.
+
+이번에는 popAll의 입력 매개변수 타입이 E의 Collection이 아니라 E의 상위 타입의 Collection이어야 함.(모든 타입은 자기 자신의 상위 타입임)
+
+이를 Collection&#60;? super E>라고 함.
+
+```java
+//소비자 매개변수에 와일드카드 적용
+public void popAll(Collection<? super E> dst){
+    while(!isEmpty())
+        dst.add(pop());
+}
+```
+
