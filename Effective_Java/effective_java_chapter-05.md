@@ -1028,3 +1028,5 @@ public void popAll(Collection<? super E> dst){
 }
 ```
 
+### 유연성을 극대화하려면 원소의 생산자나 소비자용 입력 매개변수에 와일드카드 타입을 사용할 것.
+
