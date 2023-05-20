@@ -1033,3 +1033,10 @@ public void popAll(Collection<? super E> dst){
 한편, 입력 매개변수가 생산자와 소비자 역할을 동시에 한다면 와일드카드 타입을 써도 좋을 게 없음.
 
 타입을 정확히 지정해야 하는 상황이기 때문.
+
+---
+
+    PECS:producer-extends, consumer-super
+
+매개변수화 타입 T가 생산자라면 <? extends T>를 사용하고, 소비자라면  <? super T>를 사용할 것.
+
