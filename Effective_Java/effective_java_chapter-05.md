@@ -1040,3 +1040,30 @@ public void popAll(Collection<? super E> dst){
 
 매개변수화 타입 T가 생산자라면 <? extends T>를 사용하고, 소비자라면  <? super T>를 사용할 것.
 
+PECS 공식은 와일드카드 타입을 사용하는 기본원칙.
+
+겟풋 원칙으로 부르기도 함.
+
+---
+
+위 공식을 기억해두고 Chooser 클래스 살펴보기
+
+```java
+//생성자에서 컬렉션을 받는 Chooser 클래스
+//컬렉션 안의 원소 중 하나를 무작위로 선택해 반환하는 choose 메서드를 제공
+//제네릭을 쓰지 않고 구현함.
+//제네릭의 적용하기 전 코드임.
+public class Chooser{
+    private final Object[] choiceArray;
+    
+    public Chooser(Collection choices){
+        choiceArray=choices.toArray();
+    }
+    
+    public Object choose(){
+        Random rnd=ThreadLocalRandom.current();
+        return choiceArray[rnd.nextInt(choiceArray.length)];
+    }
+}
+```
+
