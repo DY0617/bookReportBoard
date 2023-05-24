@@ -1046,7 +1046,7 @@ PECS 공식은 와일드카드 타입을 사용하는 기본원칙.
 
 ---
 
-위 공식을 기억해두고 Chooser 클래스 살펴보기
+위 공식을 기억해두고 Chooser 살펴보기
 
 ```java
 //생성자에서 컬렉션을 받는 Chooser 클래스
@@ -1065,5 +1065,29 @@ public class Chooser{
         return choiceArray[rnd.nextInt(choiceArray.length)];
     }
 }
+
+
+
+//Chooser 생성자
+//T타입의 값을 생산하기만 하니 T를 확장하는 와일드카드 타입을 사용해 선언하기
+public Chooser(Collections<? extends T> choice)
+```
+
+---
+
+위 공식을 기억해두고 union 메서드 살펴보기
+
+```java
+//제네릭 메서드
+public static <E> Set<E> union(Set<E> s1, Set<E> s2){
+    Set<E> result=new HashSet<>(s1);
+    result.addAll(s2);
+    return result;
+}
+
+
+
+//s1과 s2 모두 E의 생산자이니 PECS 공식에 따라 다음처럼 선언하기
+public static <E> Set<E> union(Set<? extends E> s1,Set<? extends E> s2)
 ```
 
