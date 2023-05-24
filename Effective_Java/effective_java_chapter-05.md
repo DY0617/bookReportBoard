@@ -1149,3 +1149,30 @@ public static void swap(List<?> list, int i, int j){
 
 리스트의 타입이 List&#60;?>인데, List&#60;?>에는 null 외에는 어떤 값도 넣을 수 없기 때문.
 
+와일드카드의 실제 타입을 알려주는 메서드를 private 도우미 메서드로 따로 작성하여 활용하는 방법으로 해결 가능.
+
+```java
+public static void swap(List<?> list, int i, int j){
+    swapHelper(list,i,j);
+}
+
+//와일드카드 타입을 실제 타입으로 바꿔주는 private 도우미 메서드
+private static <E> void swapHelper(List<E> list, int i, int j){
+    list.set(i,list.set(j,list.get(i)));
+}
+```
+
+swapHelper 메서드는 리스트가 List&#60;E>임을 알고 있음.
+
+고로 깔끔히 컴파일 됨.
+
+---
+
+핵심 정리
+
+조금 복잡하더라도 와일드카드 타입을 적용하면 API가 훨씬 유연해진다. 그러니 널리 쓰일 라이브러리를 작성한다면 반드시 와일드카드 타입을 적절히 사용해줘야 한다. PECS 공식을 기억하자. 즉, 생산자는 extends를 소비자는 super를 사용한다. Comparable과 Comparator는 모두 소비자라는 사실도 잊지 말자.
+
+---
+
+# 제네릭과 가변인수를 함께 쓸 때는 신중하라
+
