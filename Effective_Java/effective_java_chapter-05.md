@@ -922,7 +922,7 @@ public static <E extends Comparable<E>> E max(Collection<E> c){
             result=Objects.requireNonNull(e);
     
     return result;
-   
+
 }
 ```
 
@@ -1090,4 +1090,43 @@ public static <E> Set<E> union(Set<E> s1, Set<E> s2){
 //s1과 s2 모두 E의 생산자이니 PECS 공식에 따라 다음처럼 선언하기
 public static <E> Set<E> union(Set<? extends E> s1,Set<? extends E> s2)
 ```
+
+---
+
+위 공식을 기억해두고 max 메서드 살펴보기
+
+```java
+public static <E extends Comparable<E>> E max(Collection<E> c){
+
+    //이 메서드에서 빈 컬렉션을 건네면 IllegalArgumentException을 던지니, Optional<E>를 반환하도록 고치는 편이 더 나을 것.
+    if(c.isEmpty())
+        throw new IllegalArgumentException("컬렉션이 비어 있습니다.");
+    
+    E result=null;
+    for(E e:c)
+        if(result==null||e.compareTo(result)>0)
+            result=Objects.requireNonNull(e);
+    
+    return result;
+}
+
+
+//와일드카드 타입을 사용해 다듬기
+public static <E extends Coparable<? super E>> E max(List<? extends E> list)
+
+//입력 매개변수에서 E 인스턴스를 생산하므로 원래의 List<E>를 List<? extends E>로 수정
+//Comparable<E>는 E 인스턴스를 소비하여 Comparable<? super E>로 수정
+//Comparable, Comparater는 언제나 소비자이므로 항상 Comparable<? super E>를 사용하는게 좋다.
+
+```
+
+---
+
+```java
+//swap 메서드의 두 가지 선언
+public static <E> void swap(List<E> list, int i, int j);
+public static void swap(List<?> list, int i, int j);
+```
+
+두 선언중 어떤 선언이 더 나을까?
 
