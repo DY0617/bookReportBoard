@@ -1206,4 +1206,17 @@ static void dangerous(List<String>... stringLists){
 
 ---
 
-제네릭이나 매개변수화 타입의 varags 매개변수를 받는 메서드가 실무에서 매우 유용하기 때문에,
+제네릭이나 매개변수화 타입의 varags 매개변수를 받는 메서드가 실무에서 매우 유용하기 때문에, 제네릭 배열을 프로그래머가 직접 생성하는건 허용하지 않지만 제네릭 varags 매개변수를 받는 메서드를 선언할 수 있게 하는 모순을 수용함.
+
+ex) Arrays.asList(T... a), Collections.addAll(Collection<? super T> c, T... elements), EnumSet.of(E first,E... rest) 등등
+
+위 예들은 타입 안전함.
+
+@SafeVarargs 애너테이션으로 메서드 작성자가 그 메서드가 타입 안전함을 보장할 수 있음.
+
+메서드가 안전한 게 확실하지 않다면 절대 위 에너테이션을 달아서는 안됨.
+
+<br>
+
+메서드가 안전한지 확신하는 방법은?
+
