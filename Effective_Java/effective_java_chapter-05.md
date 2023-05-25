@@ -1220,3 +1220,37 @@ ex) Arrays.asList(T... a), Collections.addAll(Collection<? super T> c, T... elem
 
 메서드가 안전한지 확신하는 방법은?
 
+가변인수 메서드를 호출할 때 varargs 매개변수를 담는 제네릭 배열이 만들어진다는 사실을 기억하기
+
+메서드가 이 배열에 아무것도 저장하지 않고(그 매개변수들을 덮어쓰지 않고) 그 배열의 참조가 밖으로 노출되지 않는다면(신뢰할 수 없는 코드가 배열에 접근할 수 없다면) 타입 안전함.
+
+varargs 매개변수 배열이 호출자로부터 그 메서드로 순수하게 인수들을 전달하는 일만 한다면 그 메서드는 안전함. 이는 varargs의 목적이기도 함.
+
+<br>
+
+varargs 매개변수 배열에 아무것도 저장하지 않고도 타입 안전성을 깰 수도 있으니 주의할 것.
+
+```java
+//자신의 제네릭 매개변수 배열의 참조를 노출한다.
+//안전하지 않다.
+static <T> T[] toArray(T... args){
+    return args;
+}
+```
+
+이 메서드가 반환하는 배열의 타입은 이 메서드에 인수를 넘기는 컴파일타임에 결정되는데, 그 시점에는 컴파일러에게 충분한 정보가 주어지지 않아 타입을 잘못 판단할 수 있음.
+
+따라서 자신의 varargs 매개변수 배열을 그대로 반환하면 힙 오염을 이 메서드를 호출한 쪽의 콜스택으로까지 전이하는 결과를 낳을 수 있음.
+
+```java
+//예시
+//T 타입 인수 3개를 받아 그 중 2개를 무작위로 골라 담은 배열 반환
+static <T> T[] pickTwo(T a, T b, T c){
+    switch(ThreadLocalRandom.current().nextInt(3)){
+        case 0: return toArray(a,b);
+        case 1: return toArray(a,c);
+        case 2: return toArray(b,c);
+    {
+}
+```
+
