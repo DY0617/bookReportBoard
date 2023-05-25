@@ -1254,3 +1254,28 @@ static <T> T[] pickTwo(T a, T b, T c){
 }
 ```
 
+제네릭 가변인수를 받는 toArray 메서드를 호출한다는 점만 빼면 위험하지 않고 경고를 내지 않음.
+
+이 메서드를 본 컴파일러는 toArray에 넘길 T 인스턴스 2개를 담을 varargs 매개변수 배열을 만드는 코드를 생성함.
+
+Object[] 배열로 만듬.
+
+```java
+public static void main(String[] args){
+    String[] attributes=pickTwo("좋은","빠른","저렴한");
+}
+```
+
+별다른 경고 없이 컴파일되지만, 실행하려 하면 ClassCaseException을 던짐.
+
+pickTwo의 반환값을 attributes에 저장하기 위해 String[]으로 형변환하는 코드를 컴파일러가 자동 생성하기 때문.
+
+Object[]는 String[]의 하위 타입이 아니기 때문에 이 형변환은 실패함.
+
+이 예는 제네릭 varargs 매개변수 배열에 다른 메서드가 접근하도록 허용하면 안전하지 않다는 점을 다시 한번 상기시킴.
+
+예외가 두가지 있음.
+
+1. @SafeVarargs로 제대로 된 애노테이트된 또 다른 varargs 메서드에 넘기는 것은 안전함.
+2. 그저 이 배열 내용의 일부 함수를 호출만 하는(varargs를 받지 않는) 일반 메서드에 넘기는 것도 안전함.
+
