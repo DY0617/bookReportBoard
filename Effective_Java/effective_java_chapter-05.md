@@ -1279,3 +1279,30 @@ Object[]는 String[]의 하위 타입이 아니기 때문에 이 형변환은 �
 1. @SafeVarargs로 제대로 된 애노테이트된 또 다른 varargs 메서드에 넘기는 것은 안전함.
 2. 그저 이 배열 내용의 일부 함수를 호출만 하는(varargs를 받지 않는) 일반 메서드에 넘기는 것도 안전함.
 
+```java
+//제네릭 varags 매개변수를 안전하게 사용하는 메서드
+//@SafeVarargs 애너테이션이 달려있으니 선언하는 쪽과 사용하는 쪽 모두에서 경고를 내지 않음
+@SafeVarags
+static <T> List<T> flatten(List<? extends T>... lists){
+    List<T> result=new ArrayList<>();
+    for(List<? extends T> list:lists)
+        result.addAll(list);
+    return result;
+}
+```
+
+제네릭이나 매개변수화 타입의 varargs 매개변수를 받는 모든 메서드에 @SafeVarargs를 주기.
+
+그래야 사용자를 헷갈리게 하는 컴파일러 경고를 없앨 수 있음.
+
+안전하지 않은 varargs 메서드는 절대 작성하지 말 것.
+
+---
+
+둘 중 하나라도 어겼다면 수정 할 것
+
+- varargs 매개변수 배열에 아무것도 저장하지 않는다.
+- 그 배열 혹은 복제본을 신뢰할 수 없는 코드에 노출시키지 않는다.
+
+---
+
