@@ -1176,3 +1176,34 @@ swapHelper 메서드는 리스트가 List&#60;E>임을 알고 있음.
 
 # 제네릭과 가변인수를 함께 쓸 때는 신중하라
 
+가변인수 메서드를 호출하면 가변인수를 담기 위한 배열이 자동으로 하나 만들어짐.
+
+그런데 내부로 감춰야 했을 이 배열을 클라이언트에 노출하는 문제가 생김.
+
+그 결과 varags 매게변수에 제네릭이나 매개변수화 타입이 포함되면 알기 어려운 컴파일 경고가 발생함.
+
+메서드를 선언할 때 실체화 불가 타입으로 varags 매개변수를 선언하면 컴파일러 경고를 보냄.
+
+가변인수 메서드를 호출할 때도 varags 매개변수가 실체화 불가 타입으로 추론되면, 그 호출에 대해서도 경고를 냄.
+
+---
+
+매개변수화 타입의 변수가 타입이 다른 객체를 참조하면 힙 오염이 발생함.
+
+```java
+//제네릭과 varags를 혼용하면 타입 안정성이 깨짐
+static void dangerous(List<String>... stringLists){
+    List<Integer> intList=List.of(42);
+    Object[] objects = stringLists;
+    objects[0]=intList;             //힙 오염 발생
+    String s=stringLists[0].get(0)  //ClassCastException
+}
+```
+
+마지막 줄에 컴파일러가 생성한 보이지 않는 형변환이 숨어있어 ClassCastException을 던짐.
+
+타입 안정성이 깨지니 제네릭 varargs 배열 매개변수 값을 저장하는 것은 안전하지 않음.
+
+---
+
+제네릭이나 매개변수화 타입의 varags 매개변수를 받는 메서드가 실무에서 매우 유용하기 때문에,
