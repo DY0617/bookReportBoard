@@ -1306,3 +1306,55 @@ static <T> List<T> flatten(List<? extends T>... lists){
 
 ---
 
+```java
+//제네릭 varargs 매개변수를 List로 대체하기
+//타입 안전함
+static <T> List<T> flatten(List<List<? extends T>> lists){
+    List<T> result=new ArrayList<>();
+    for(List<? extends T> list:lists)
+        result.addAll(list);
+    return result;
+}
+```
+
+    정적 팩터리 메서드인 List.of를 활용하면 다음 코드와 같이 이 메서드에 임의 개수의 인수를 넘길 수 있음.
+    List.of에도 @SafeVarargs 애너테이션이 달려있기 때문.
+
+    audience=flatten(List.of(friends, romans, countrymen));
+
+이 방식은 컴파일러가 이 메서드의 타입 안전성을 검증할 수 있다는 장점이 있음.
+
+@SafeVarargs 애너테이션을 직접 달 필요도 없고, 실수로 안전하다고 판단할 걱정도 없음.
+
+클라이언트 코드가 살짝 지저분해지고 속도가 조금 느려질 수 있다는 정도의 단점도 있음.
+
+또한 이 방식은 toArray처럼 varargs 메서드를 안전하게 작성하는 게 불가능한 상황에서도 쓸 수 있음.
+
+이 toArray의 List 버전이 List.of임.
+
+```java
+static <T> T[] pickTwo(T a, T b, T c){
+    switch(ThreadLocalRandom.current().nextInt(3)){
+        case 0: return List.of(a,b);
+        case 1: return List.of(a,c);
+        case 2: return List.of(b,c);
+    {
+}
+
+public static void main(String[] args){
+    List<String> attributes=pickTwo("좋은","빠른","저렴한");
+}
+```
+
+결과 코드는 배열 없이 제네릭만 사용하므로 타입 안전함.
+
+---
+
+핵심 정리
+
+가변인수와 제네릭은 궁합이 좋지 않다. 가변인수 기능은 배열을 노출하여 추상화가 완벽하지 못하고, 배열과 제네릭의 타입 규칙이 서로 다르기 때문이다. 제네릭 varargs 매개변수는 타입 안전하지는 않지만 허용된다. 메서드에 제네릭 varargs 매개변수를 사용하고자 하낟면, 먼저 그 메서드가 타입 안전한지 확인한 다음 @SafeVarargs 애너테이션을 달아 사용하는 데 불편함이 없게끔 하자.
+
+---
+
+# 타입 안전 이종 컨테이너를 고려하라
+
