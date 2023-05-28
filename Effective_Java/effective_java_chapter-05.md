@@ -1358,3 +1358,5 @@ public static void main(String[] args){
 
 # 타입 안전 이종 컨테이너를 고려하라
 
+제네릭은 Set&#60;E>, Map&#60;K,V> 등의 컬렉션과 ThreadLocal&#60;T>, AtomicReference&#60;T> 등의 단일원소 컨테이너에서도 흔히 쓰임.
+
