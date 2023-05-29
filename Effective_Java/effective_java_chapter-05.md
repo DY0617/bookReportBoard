@@ -1380,3 +1380,33 @@ Set은 원소의 타입을 뜻하는 단 하나의 타입 매개변수만 있으
 
 <br>
 
+타입 안전 이종 컨테이너 패턴의 예시
+
+```java
+//타입 안전 이종 컨테이너 패턴 API
+//class의 클래스가 제네릭이기 때문에 동작함.
+//class의 리터럴 타입은 Class가 아닌 Class<T>임
+//컴파일타임 타입 정보와 런타임 타입 정보를 알아내기 위해 메서드들이 주고받는 class 리터럴을 타입 토큰이라 함.
+public class Favorites{
+    public <T> void putFavorite(Class<T> type, T instance);
+    public <T> T getFavorite(Class<T> type);
+}
+```
+
+```java
+//타입 안전 이종 컨테이너 패턴의 클라이언트
+public static void main(String[] args){
+    Favorites f=new Favorites();
+
+    f.putFavorite(String.class,"Java");
+    f.putFavorite(Integer.class,0xcafebabe);
+    f.putFavorite(Class.class,Favorites.class);
+
+    String favoriteString=f.getFavorite(String.class);
+    int favoriteInteger=f.getFavorite(Integer.class);
+    Class<?> favoriteClass=f.getFavorite(Class.class);
+    
+    System.out.printf("%s %x %s%n",favoriteString,favoriteInteger,favoriteClass.getName());
+}
+```
+
