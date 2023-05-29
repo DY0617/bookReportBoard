@@ -1410,3 +1410,22 @@ public static void main(String[] args){
 }
 ```
 
+Favorites 인스턴스는 타입 안전함.
+
+```java
+//타입 안전 이종 컨테이너 패턴 구현
+public class Favorites{
+    private Map<Class<?>, Object> favorites=new HashMap<>();
+    
+    public <T> void putFavorite(Class<T> type, T instance){
+        favorites.put(Objects.requireNonNull(type),instance);
+    }
+    
+    public <T> T getFavorite(Class<T> type){
+        return type.cast(favorites.get(type));
+    }
+}
+```
+
+Favorites가 사용하는 private 맵 변수인 favorites의 타입은 Map&#60;Class&#60;?>,Object>임.
+
