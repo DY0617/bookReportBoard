@@ -1429,3 +1429,113 @@ public class Favorites{
 
 Favorites가 사용하는 private 맵 변수인 favorites의 타입은 Map&#60;Class&#60;?>,Object>임.
 
+비한정적 와일드카드 타입이라 이 맵 안에 아무것도 넣을 수 없다고 생각할 수 있지만, 그렇지 않음.
+
+와일드카드 타입이 중첩되어 있음.
+
+맵이 아니라 키가 와일드타입임.
+
+이는 모든 키가 서로 다른 매개변수화 타입일 수 있다는 뜻임.
+
+favorites 맵의 값 타입은 단순히 Object임.
+
+이 맵은 키와 값 사이의 타입 관계를 보증하지 않는다는 뜻.
+
+모든 값이 키로 명시한 타입임을 보증하지 않는다.
+
+<br>
+
+putFavorite에서, 키와 값 사이의 타입 링크 정보는 버려짐.
+
+그 값이 그 키 타입의 인스턴스라는 정보가 사라진다는 뜻.
+
+하지만 getFavorite 메서드에서 이 관계를 되살릴 수 있으니 상관없음.
+
+<br>
+
+getFavorite 코드에서, 주어진 Class 객체에 해당하는 값을 favorites 맵에서 꺼냄.
+
+이 객체가 반환해야 할 객체가 맞지만, 잘못된 컴파일타입을 가지고 있음.
+
+Object를 T로 바꿔 반환해야 함.
+
+따라서 Class의 cast 메서드를 사용해 이 객체 참조를 Class 객체가 가리키는 타입으로 동적 형변환함.
+
+    cast 메서드?
+    
+    cast 메서드는 형변환 연산자의 동적 버전임.
+    이 메서드는 단순히 주어진 인수가 Class 객체가 알려주는 타입의 인스턴스인지 검사한 다음, 맞다면 그 인수를 그대로 반환하고
+    아니면 ClassCastException을 던짐.
+    
+    오류가 나지 않는다면 favorites 맵 안의 값은 해당 키의 타입과 항상 일치한다는 뜻.
+
+```java
+public class Class<T>{
+    T cast(Object obj);
+}
+```
+
+cast 메서드의 시그니처가 Class 클래스가 제네릭이라는 이점을 완벽히 활용하기 때문에, cast 메서드를 활용함.
+
+---
+
+Favorites 클래스의 두 가지 제약
+
+1. 악의적인 클라이언트가 Class 객체를 로 타입으로 넘기면 타입 안전성이 쉽게 깨진다.
+2. 실체화 불가 타입에는 사용할 수 없다.
+
+---
+
+때로는 이 메서드들이 허용하는 타입을 제한하고 싶을 수 있는데, 한정적 타입 토큰을 활용하면 가능함.
+
+    한정적 타입 토큰?
+    
+    단순히 한정적 타입 매개변수나 한정적 와일드카드를 사용하여 표현 가능한 타입을 제한하는 타입 토큰
+    
+```java
+//annotationType 인수는 애너테이션 타입을 뜻하는 한정적 타입 토큰임.
+public <T extends Annotation>
+    T getAnnotation(Class<T> annotationType);
+```
+
+이 메서드는 토큰으로 명시한 타입의 애너테이션이 대상 요소에 달려 있다면 그 애너테이션을 반환하고 없다면 null을 반환함.
+
+애너테이션된 요소는 그 키가 애너테이션 타입인 타입 안전 이종 컨테이너임.
+
+---
+
+Class&#60;?> 객체가 있고, 이를 한정적 타입 토큰을 받는 메서드에 넘기려면?
+
+객체를 Class&#60;? extends Annotation>으로 형변환할 수도 있지만, 이 형변환은 비검사이므로 컴파일하면 경고가 뜸.
+
+Class 클래스가 이런 형변환을 안전하고 동적으로 수행해주는 인스턴스 메서드를 제공함.
+
+asSubclass 메서드.
+
+호출된 인스턴스 자신의 Class 객체를 인수가 명시한 클래스로 형변환함.
+
+형변환에 성공하면 인수로 받은 클래스 객체를 반환하고 실패하면 ClassCastException 반환.
+
+```java
+//컴파일 시점에는 타입을 알 수 없는 애너테이션을 asSubclass 메서드를 사용해 런타임에 읽어내는 예
+//asSubclass를 사용해 한정적 타입 토큰을 안전하게 형변환함.
+static Annotation getAnnotation(AnnotatedElement element, String annotationTypeName){
+    Class<?> annotationType=null;
+    try{
+        annotationType=Class.forName(annotationTypeName);
+    }
+    catch(Exception ex){
+        throw new IllegalArgumentException(ex);
+    }
+    return element.getAnnotation(annotationType.asSubclass(Annotation.class));
+}
+```
+
+---
+
+핵심 정리
+
+컬렉션 API로 대표되는 일반적인 제네릭 형태에서는 한 컨테이너가 다룰 수 있는 타입 매개변수의 수가 고정되어 있다. 하지만 컨테이너 자체가 아닌 키를 타입 매개변수로 바꾸면 이런 제약이 없는 타입 안전 이종 컨테이너를 만들 수 있다. 타입 안전 이종 컨테이너는 Class를 키로 쓰며, 이런 식으로 쓰이는 Class 객체를 타입 토큰이라 함. 또한, 직접 구현한 키 타입도 쓸 수 있다. 예컨대 데이터베이스의 행(컨테이너)을 표현한 DatabaseRow 타입에는 제네릭 타입인 Column&#60;T>를 키로 사용할 수 있다.
+
+---
+
