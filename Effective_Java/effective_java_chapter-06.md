@@ -78,5 +78,60 @@ public enum Orange{NAVEL,TEMPLE,BLOOD}
 
 싱글턴은 원소가 하나뿐인 열거 타입이라 할 수 있고, 열거 타입은 싱글턴의 일반화 형태라 할 수 있음.
 
+<br>
+
+열거 타입은 컴파일타임 타입 안전성을 제공함.
+
+위 코드의 Apple 열거 타입을 매개변수로 받는 메서드를 선언했다면, 건네받은 참조는 Apple의 세 가지 값 중 하나임이 확실함.
+
+<br>
+
+열거 타입에는 각자의 이름공간이 있어서 이름이 같은 상수도 평화롭게 공존함.
+
+공개되는 것이 오직 필드의 이름뿐이기 때문에, 정수 열거 패턴과 달리 상수 값이 클라이언트로 컴파일되어 각인되지 않기 때문에 열거 타입에 새로운 상수를 추가하거나 순서를 바꿔도 다시 컴파일하지 않아도 됨.
+
+열거 타입의 toString 메서드는 출력하기에 적합한 문자열을 내어줌.
+
+<br>
+
+열거 타입에는 임의의 메서드나 필드를 추가할 수 있고, 임의의 인터페이스를 구현하게 할 수도 있음.
+
+ex) Object, Comparable, Serializable 등등..
+
 ---
+
+```java
+//데이터와 메서드를 갖는 열거 타입
+//행성 정보
+public enum Planet{
+    MERCURY(3.302e+23,2.439e6),
+    VENUS  (4.869e+24,6.052e6),
+    EARTH  (5.975e+24,6.378e6),
+    MARS   (6.419e+23,3.393e6),
+    JUPITER(1,899e+27,7.149e7),
+    SATURN (5.685e+26,6.027e7),
+    URANUS (8.683e+25,2.556e7),
+    NEPTUNE(1.024e+26,2.477e7);
+    
+    private final double mass;
+    private final double radius;
+    private final double surfaceGravity;
+    
+    private static final double G = 6.67300E-11;
+    
+    Planet(double mass, double radius){
+        this.mass=mass;
+        this.radius=radius;
+        surfaceGravity=G*mass/(radius*radius);
+    }
+    
+    public double mass()            {return mass;}
+    public double radius()          {return radius;}
+    public double surfaceGravity()  {return surfaceGravity;}
+    
+    public double surfaceWeight(double mass){
+        return mass*surfaceGravity;
+    }
+}
+```
 
