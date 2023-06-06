@@ -24,3 +24,24 @@
 
 # int 상수 대신 열거 타입을 사용하라
 
+열거 타입은 일정 개수의 상수 값을 정의한 다음, 그 외의 값은 허용하지 않는 타입임.
+
+```java
+//정수 열거 패턴
+//취약함
+public static final int APPLE_FUJI          = 0;
+public static final int APPLE_PIPPIN        = 1;
+public static final int APPLE_GRANNY_SMITH  = 2;
+
+public static final int ORANGE_NAVEL        = 0;
+public static final int ORANGE_TEMPLE       = 1;
+public static final int ORANGE_BLOOD        = 2;
+```
+
+정수 열거 패턴에는 단점이 많음.
+
+1. 타입 안전을 보장할 방법이 없음.
+2. 표현력이 좋지 않음.
+
+오렌지를 건네야 할 메서드에 사과를 보내고 동등 연산자로 비교하더라도 컴파일러는 아무런 경고 메시지를 출력하지 않음.
+
