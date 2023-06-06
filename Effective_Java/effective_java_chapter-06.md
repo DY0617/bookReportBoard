@@ -135,3 +135,22 @@ public enum Planet{
 }
 ```
 
+열거 타입 상수 각각의 특정 데이터와 연결지으려면, 생성자에서 데이터를 받아 인스턴스 필드에 저장하면 됨.
+
+열거 타입은 근본적으로 불변이라 모든 필드는 final이어야 함.
+
+필드를 public으로 선언해도 되지만 private로 두고 별도의 pbulic 접근자 메서드를 두는게 나음.
+
+```java
+//어떤 객체의 지구에서의 무게를 입력받아 여덟 행성에서의 무게를 출력하는 코드
+//짧게 작성이 가능함
+public class WeightTable{
+    public static void main(String[] args){
+        double earthWeight=Double.parseDouble(args[0]);
+        double mass=earthWeight/Planet.EARTH.surfaceGravity();
+        for(Planet p: Planet.values())
+            System.out.println("%s에서의 무게는 %f이다.%n",p,p.surfaceWeight(mass));
+    }
+}
+```
+
