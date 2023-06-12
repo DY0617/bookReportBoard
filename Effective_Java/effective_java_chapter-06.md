@@ -154,3 +154,9 @@ public class WeightTable{
 }
 ```
 
+열거 타입은 자신 안에 정의된 상수들의 값을 배열에 담아 반환하는 정적 메서드인 values를 제공함.
+
+값들은 선언된 순서대로 저장됨.
+
+각 열거 타입 값의 toString 메서드는 상수 이름을 문자열로 반환하므로 println과 printf로 출력하기 좋음.
+
