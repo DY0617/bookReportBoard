@@ -213,3 +213,27 @@ public enum Operation{
 }
 ```
 
+동작은 하지만 그리 이쁘지 않음.
+
+마지막 throw문은 실제로 동작할 일은 없지만, 기술적으로는 도달할 수 있기 때문에 생략하면 컴파일조차 되지 않음.
+
+또한 새로운 상수를 추가하면 해당 case문도 추가해야 해서 깨지기 쉬운 코드임.
+
+깜빡한다면 컴파일은 되지만 새로 추가한 연산을 수행하려 할 때 알 수 없는 연산이라는 런타임 오류를 내며 프로그램 종료.
+
+더 좋은 방법이 존재함.
+
+```java
+//상수별 메서드 구현을 활용
+//열거 타입에 apply라는 추상 메서드를 선언하고 상수별 클래스 몸체,
+//즉 각 상수에서 자신에 맞게 재정의하는 방법
+public emum Operation{
+    PLUS  {public double apply(double x, double y){return x+y;}}
+    MINUS {public double apply(double x, double y){return x-y;}}
+    TIMES {public double apply(double x, double y){return x*y;}}
+    DIVIDE{public double apply(double x, double y){return x/y;}}
+
+    public abstract double apply(double x, double y);
+}
+```
+
