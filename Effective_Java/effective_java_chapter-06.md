@@ -227,7 +227,7 @@ public enum Operation{
 //상수별 메서드 구현을 활용
 //열거 타입에 apply라는 추상 메서드를 선언하고 상수별 클래스 몸체,
 //즉 각 상수에서 자신에 맞게 재정의하는 방법
-public emum Operation{
+public enum Operation{
     PLUS  {public double apply(double x, double y){return x+y;}}
     MINUS {public double apply(double x, double y){return x-y;}}
     TIMES {public double apply(double x, double y){return x*y;}}
@@ -238,4 +238,47 @@ public emum Operation{
 ```
 
 apply 메서드가 상수 선언 바로 옆에 붙어있으니 새로운 상수를 추가할 때 apply도 재정의해야 한다는 사실을 깜빡하기 어려움.
+
+apply가 추상 메서드이므로 재정의하지 않았다면 컴파일 오류로 알려줌.
+
+<br>
+
+상수별 메서드 구현을 상수별 데이터와 결합할 수도 있음.
+
+```java
+//상수별 클래스 몸체(class body)와 데이터를 사용한 열거 타입
+public enum Operation{
+    PLUS("+")  {
+        public double apply(double x, double y){
+            return x+y;
+        }
+    },
+    MINUS("-") {
+        public double apply(double x, double y){
+            return x-y;
+        }
+    },
+    TIMES("*") {
+        public double apply(double x, double y){
+            return x*y;
+        }
+    },
+    DIVIDE("/"){
+        public double apply(double x, double y){
+            return x/y;
+        }
+    };
+
+    private final String symbol;
+
+    Operation(String symbol){this.symbol=symbol;}
+
+    @Override
+    public string toString(){
+        return symbol;
+    }
+
+    public abstract double apply(double x, double y);
+}
+```
 
