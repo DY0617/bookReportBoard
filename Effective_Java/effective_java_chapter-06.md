@@ -282,3 +282,39 @@ public enum Operation{
 }
 ```
 
+위 toString은 계산식 출력을 엄청나게 간편하게 해줌.
+
+```java
+public static void main(String[] args){
+    double x=Double.parseDouble(args[0]);
+    double y=Double.parseDouble(args[1]);
+    for(Operation op:Operation.values())
+        System.out.printf("%f %s %f = %f%n",
+                         x,op,y,op.apply(x,y));
+}
+```
+
+위 명령어 인수에 2와 4를 주어 프로그램을 실행하면 다음과 같은 결과를 볼 수 있음
+
+    2.000000 + 4.000000 = 6.000000
+    2.000000 - 4.000000 = -2.000000
+    2.000000 * 4.000000 = 8.000000
+    2.000000 / 4.000000 = 0.500000
+
+열거 타입에는 상수 이름을 입력받아 그 이름에 해당하는 상수를 반환해주는 valueOf(String) 메서드가 자동 생성됨.
+
+한편, 열거 타입의 toString 메서드를 재정의하려거든 toString이 반환하는 문자열을 해당 열거 타입 상수로 변환해주는 fromString 메서드도 함께 제공하는 것을 고려해보기.
+
+```java
+//모든 열거 타입에서 사용할 수 있도록 구현한 fromString
+//타입 이름을 적절히 바꿔야 하고 모든 상수의 문자열 표현이 고유해야 성립함.
+private static final Map<String,Operation> stringToEnum = 
+        Stream.of(values()).collect(
+            toMap(Object::toString, e->e));
+
+//지정한 문자열에 해당하는 Operation이 존재한다면 반환하기
+public static Optional<Operation> fromString(String symbol){
+    return Optional.ofNullable(stringToEnum.get(symbol));
+}
+```
+
