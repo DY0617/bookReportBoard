@@ -330,3 +330,47 @@ ex) 열거 타입 생성자에서 같은 열거 타입의 다른 상수에도 �
 
 (열거 타입의 각 상수는 해당 열거 타입의 인스턴스를 public static final 필드로 선언한 것임을 떠올리자. 즉, 다른 형제 상수도 static이므로 열거 타입 생성자에서 정적 필드에 접근할 수 없다는 제약이 적용됨.)
 
+---
+
+fromString이 Optional<Operation>을 반환하는 점을 주의할 것.
+
+주어진 문자열이 가리키는 연산이 존재하지 않을 수 있음을 클라이언트에 알리고, 그 상황을 클라이언트에서 대처하도록 한 것임.
+
+---
+
+상수별 메서드 구현에는 열거 타입 상수끼리 코드를 공유하기 어렵다는 단점이 있음.
+
+```java
+//급여명세서에 쓸 요일을 표현하는 열거 타입
+//직원의 시간당 기본 임금과 그날 일한 시간이 주어지면 일당을 계산해주는 메서드 보유
+//주중에 오버타임이 발생하면 잔업수당 ++
+//주말에는 무조건 잔업수당 ++
+//switch문을 이용하면 case문을 날짜별로 두어 이 계산을 쉽게 수행 가능
+
+//값에 따라 분기하여 코드를 공유하는 열거 타입
+//좋은 방법일까?
+
+enum PayrollDay{
+    MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY;
+
+    private static final int MINS_PER_SHIFT = 8*60;
+
+    int pay(int minutesWorked, int payRate){
+        int basePay=minutesWorked*payRate;
+
+        int overtimePay;
+        switch(this){
+            case SATURDAY: case SUNDAY:
+                overtimePay=basePay/2;
+                break;
+            default:
+                overtimePay=minutesWorked<=MINS_PER_SHIFT ? 0 : (minutesWorked-MINS_PER_SHIFT)*payRate/2;
+        }
+
+        return basePay+overtimePay;
+    }
+}
+```
+
+간결하지만, 관리 관점에서는 위험한 코드임.
+
