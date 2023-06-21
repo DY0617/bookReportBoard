@@ -318,3 +318,9 @@ public static Optional<Operation> fromString(String symbol){
 }
 ```
 
+Operation 상수가 stringToEnum 맵에 추가되는 시점은 열거 타입 상수 생성 후 정적 필드가 초기화될 때임.
+
+앞의 코드는 values 메서드가 반환하는 배열 대신 스트림을 사용함.
+
+열거 타입의 정적 필드 중 열거 타입의 생성자에서 접근할 수 있는 것은 상수 변수 뿐임.
+
