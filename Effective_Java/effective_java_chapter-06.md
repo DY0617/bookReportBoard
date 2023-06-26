@@ -435,3 +435,17 @@ switch문은 열거 타입의 상수별 동작을 구현하는 데 적합하지 
 
 하지만 기존 열거 타입에 상수별 동작을 혼합해 넣을 때는 switch문이 좋은 선택이 될 수 있음.
 
+```java
+//switch문을 이용해 원래 열거 타입에 없는 기능을 수행한다.
+public static Operation inverse(Operation op){
+    switch(op){
+    case PLUS:     return Operation.MINUS;
+    case MINUS:    return Operation.PLUS;
+    case TIMES:    return Operation.DIVIDE;
+    case DIVIDE:   return Operation.TIMES;
+
+    default: throw new AssertionError("알 수 없는 연산: " + op);
+    }
+}
+```
+
