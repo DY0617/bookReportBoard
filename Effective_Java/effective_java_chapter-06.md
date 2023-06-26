@@ -439,13 +439,37 @@ switch문은 열거 타입의 상수별 동작을 구현하는 데 적합하지 
 //switch문을 이용해 원래 열거 타입에 없는 기능을 수행한다.
 public static Operation inverse(Operation op){
     switch(op){
-    case PLUS:     return Operation.MINUS;
-    case MINUS:    return Operation.PLUS;
-    case TIMES:    return Operation.DIVIDE;
-    case DIVIDE:   return Operation.TIMES;
+        case PLUS:     return Operation.MINUS;
+        case MINUS:    return Operation.PLUS;
+        case TIMES:    return Operation.DIVIDE;
+        case DIVIDE:   return Operation.TIMES;
 
-    default: throw new AssertionError("알 수 없는 연산: " + op);
+        default: throw new AssertionError("알 수 없는 연산: " + op);
     }
 }
 ```
+
+추가하려는 메서드가 의미상 열거 타입에 속하지 않는다면 직접 만든 열거 타입이라도 이 방식을 적용하는게 좋음.
+
+종종 쓰이지만 열거 타입 안에 포함할 만큼 유용하지는 않은 경우도 마찬가지임.
+
+---
+
+열거 타입을 언제 쓰면 좋을까?
+
+**필요한 원소를 컴파일타임에 다 알 수 있는 상수 집합이라면 항상 열거 타입을 사용하기.**
+
+열거 타입에 정의된 상수 개수가 영원히 고정 불변일 필요는 없음.
+
+열거 타입은 나중에 상수가 추가돼도 바이너리 수준에서 호환되도록 설계되었음.
+
+---
+
+핵심 정리
+
+열거 타입은 확실히 정수 상수보다 뛰어나다. 더 읽기 쉽고 안전하고 강력하다. 대다수 열거 타입이 명시적 생성자나 메서드 없이 쓰이지만, 각 상수를 특정 데이터와 연결짓거나 상수마다 다르게 동작하게 할 때는 필요하다. 드물게는 하나의 메서드가 상수별로 다르게 동작해야 할 때도 있다. 이런 열거 타입에서는 switch 문 대신 상수별 메서드 구현을 사용하자. 열거 타입 상수 일부가 같은 동작을 공유한다면 전략 열거 타입 패턴을 사용하자.
+
+---
+
+### ordinal 메서드 대신 인스턴스 필드를 사용하라
 
