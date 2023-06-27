@@ -476,3 +476,4 @@ public static Operation inverse(Operation op){
 대부분의 열거 타입 상수는 자연스럽게 하나의 정숫값에 대응됨.
 
 그리고 모든 열거 타입은 해당 상수가 그 열거 타입에서 몇 번째 위치인지를 반환하는 ordinal 메서드를 제공함.
+
