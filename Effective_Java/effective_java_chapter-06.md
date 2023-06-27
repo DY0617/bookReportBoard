@@ -477,3 +477,5 @@ public static Operation inverse(Operation op){
 
 그리고 모든 열거 타입은 해당 상수가 그 열거 타입에서 몇 번째 위치인지를 반환하는 ordinal 메서드를 제공함.
 
+열거 타입 상수와 연결된 정숫값이 필요하면 ordinal 메서드를 이ㅛㅇㅇ하고 싶은 유혹에 빠지지만, 사용하는 것을 추천하지 않음.
+
