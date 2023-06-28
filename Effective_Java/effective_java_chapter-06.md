@@ -504,5 +504,20 @@ public enum Ensemble{
 열거 타입 상수에 연결된 값은 ordinal 메서드로 얻지 말고, 인스턴스 필드에 저장하기.
 
 ```java
+public enum Ensemble{
+    SOLO(1),DUET(2),TRIO(3),QUARTET(4),QUINTET(5),SEXTET(6),SEPTET(7),OCTET(8),DOUBLE_QUARTET(8),NONET(9),DECTET(10),TRIPLE_QUARTET(12);
 
+    private final int numberOfMusicians;
+    Ensemble(int size){this.numberOfMusicians=size;}
+    public int numberOfMusicians(){return numberOfMusicians;}
+}
 ```
+
+Enum의 API 문서를 보면 ordinal 메서드는 EnumSet과 EnumMap과 같이 열거 타입 기반의 범용 자료구조에 쓸 목적으로 설계되었다고 나와있음.
+
+따라서 이런 용도가 아니라면 ordinal 메서드는 절대 사용하지 말 것.
+
+---
+
+# 비트 필드 대신 EnumSet을 사용하라
+
