@@ -560,3 +560,30 @@ Set 인터페이스를 완벽히 구현하며, 타입 안전하고, 다른 어�
 원소가 총 64개 이하라면, EnumSet 전체를 long 변수 하나로 표현하여 비트 필드에 비견되는 성능을 보여줌.
 
 removeAll과 retainAll같은 대량 작업ㄷ은 비트를 효율적으로 처리할 수 있는 산술 연산을 써서 구현했음.
+
+난해한 작업을 EnumSet이 다 처리해주기 때문에 비트를 직접 다룰 때 흔히 겪는 오류들에서 해방됨.
+
+```java
+//비트 필드를 대체하는 EnumSet
+public class Text{
+    public enum Style{BOLD, ITALIC, UNDERLINE, STRIKETHROUGH}
+
+    public void applyStyles(Set<Style> styles)(Set<Style> styles){...};
+}
+```
+
+    다음은 applyStyles 메서드에 EnumSet 인스턴스를 건네는 클라이언트 코드임.
+    EnumSet은 집합 생성 등 다양한 기능의 정적 팩터리를 제공하는데, 다음 코드에서는 그 중 of 메서드를 사용했음.
+
+    text.applyStyles(EnumSet.of(Style.BOLD, Style.ITALIC));
+
+---
+
+핵심 정리
+
+열거할 수 있는 타입을 한데 모아 집합 형태로 사용한다고 해도 비트 필드를 사용할 이유는 없다. EnumSet 클래스가 비트 필드 수준의 명료함과 성능을 제공하고 열거 타입의 장점까지 선사하기 때문이다.
+
+---
+
+# ordinal 인덱싱 대신 EnumMap을 사용하라
+
