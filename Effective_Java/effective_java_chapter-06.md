@@ -522,3 +522,17 @@ Enum의 API 문서를 보면 ordinal 메서드는 EnumSet과 EnumMap과 같이 �
 
 # 비트 필드 대신 EnumSet을 사용하라
 
+```java
+//비트 필드 열거 상수
+//좋지 않은 방법임.
+public class Text{
+    public static final int STYLE_BOLD            1<<0;
+    public static final int STYLE_ITALIC          1<<0;
+    public static final int STYLE_UNDERLINE       1<<0;
+    public static final int STYLE_STRIKETHROUGH   1<<0;
+
+    //매개변수 styles는 0개 이상의 STYLE_ 상수를 비트별 OR한 값임.
+    public void applyStyles(int styles){...};
+}
+```
+
