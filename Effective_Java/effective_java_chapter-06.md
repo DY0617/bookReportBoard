@@ -588,3 +588,21 @@ public class Text{
 # ordinal 인덱싱 대신 EnumMap을 사용하라
 
 ordinal 인덱싱은 위에 서술한 것처럼 문제점이 많음.
+
+```java
+class Plant{
+    enum LifeCycle {ANNUAL, PERENNIAL, BIENNIAL}
+
+    final String name;
+    final LifeCycle lifeCycle;
+
+    Plant(String name, LifeCycle lifeCycle){
+        this.name=name;
+        this.lifeCycle=lifeCycle;
+    }
+
+    @Override public String toString(){
+        return name;
+    }
+}
+```
