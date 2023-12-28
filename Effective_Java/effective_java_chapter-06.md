@@ -590,6 +590,7 @@ public class Text{
 ordinal 인덱싱은 위에 서술한 것처럼 문제점이 많음.
 
 ```java
+//식물을 간단히 나타낸 클래스
 class Plant{
     enum LifeCycle {ANNUAL, PERENNIAL, BIENNIAL}
 
@@ -605,4 +606,21 @@ class Plant{
         return name;
     }
 }
+
+
+//정원에 심은 식물들을 배열 하나로 관리하고, 이들을 생애주기별로 묶어보기
+//ordinal()을 배열 인덱스로 사용함. 안좋은 예
+
+Set<Plant>[] plantsByLifeCycle = (Set<Plant>[]) new Set[Plant.LifeCycle.values().length];
+for(int i=0; i< plantsByLifeCycle.length; i++)
+    plantsByLifeCycle[i]=new HashSet<>();
+
+for(Plant p : garden)
+    plantsByLifeCycle[p.lifeCycle.ordinal()].add(p);
+
+//결과 출력
+for(int i=0;i<plantsByLifeCycle.length;i++){
+    System.out.printf("%s: %s%n", Plant.LifeCycle.values()[i], plantsByLifeCycle[i]);
+}
 ```
+
