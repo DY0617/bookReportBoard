@@ -633,5 +633,19 @@ for(int i=0;i<plantsByLifeCycle.length;i++){
 - 잘못된 값을 사용하면 잘못된 동작을 묵묵히 수행하거나, 운이 좋다면 ArrayIndexOutOfBoundsException을 밷을 것.
 
 <br>
+
 ### 해결책은?
 
+배열은 실질적으로 열거 타입 상수를 값으로 매핑하는 작업을 함. 그러니 Map을 사용하는 것도 가능함.
+
+열거 타입을 키로 사용하도록 설계한 아주 빠른 Map 구현체가 있는데, EnumMap이라 함.
+
+```java
+//EnumMap을 사용해 데이터와 열거 타입을 매핑함
+Map<Plant.LifeCycle, Set<Plant>> plantsByLifeCycle = new EnumMap<>(Plant.LifeCycle.class);
+for(Plant.LifeCycle lc : Plant.LifeCycle.values())
+    plantsByLifeCycle.put(lc,new HashSet<>));
+for(Plant p : garden)
+    plantsByLifeCycle.get(p.lifeCycle).add(p);
+System.out.println(plantsByLifeCycle);
+```
