@@ -632,6 +632,6 @@ for(int i=0;i<plantsByLifeCycle.length;i++){
 - 정수는 열거 타입과 달리 타입 안전하지 않기 때문임.
 - 잘못된 값을 사용하면 잘못된 동작을 묵묵히 수행하거나, 운이 좋다면 ArrayIndexOutOfBoundsException을 밷을 것.
 
-
+<br>
 해결책은?
 
