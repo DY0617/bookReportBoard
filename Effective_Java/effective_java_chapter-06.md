@@ -630,4 +630,8 @@ for(int i=0;i<plantsByLifeCycle.length;i++){
 
 정확한 정숫값을 사용한다는 것을 우리가 직접 보증해야 함.(가장 큰 문제)
 - 정수는 열거 타입과 달리 타입 안전하지 않기 때문임.
+- 잘못된 값을 사용하면 잘못된 동작을 묵묵히 수행하거나, 운이 좋다면 ArrayIndexOutOfBoundsException을 밷을 것.
+
+
+해결책은?
 
