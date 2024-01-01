@@ -649,3 +649,12 @@ for(Plant p : garden)
     plantsByLifeCycle.get(p.lifeCycle).add(p);
 System.out.println(plantsByLifeCycle);
 ```
+더 짧고, 명료하고, 안전하고, 성능도 원래 버전과 비등함.
+
+안전하지 않은 형변환은 쓰지 않고, 맵의 키인 열거 타입이 그 자체로 출력용 문자열을 제공함. (출력 결과에 직접 레이블을 달 일이 없음)
+
+배열 인덱스를 계산하는 과정에서 오류가 날 가능성도 사라짐.
+
+내부에서 배열을 사용하기 때문에, EnumMap의 성능은 ordinal을 쓴 배열과 비슷함.
+
+내부 구현 방식을 안으로 숨겨서 Map의 타입 안전성과 배열의 성능을 모두 얻어냄.
