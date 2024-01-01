@@ -747,3 +747,36 @@ public enum Phase{
     }
 }
 ```
+
+맵의 타입인 Map<Phase,Map<Phase,Transition>>은 이전 상태에서 '이후 상태에서 전이로의 맵'에 대응시키는 맵이라는 뜻임.
+
+냅을 초기화하기 위해 수집기(java.util.stream.Collector) 2개를 차례로 사용함.
+
+groupingBy에서는 전이를 이전 상태를 기준으로 묶고, toMap에서는 이후 상태를 전이에 대응시키는 EnumMap을 생성함.
+
+두 번째 수집기의 병합 함수인 (x,y)->y는 선언만 하고 실제로 쓰이지는 않는데, 이는 단지 EnumMap을 얻으려면 맵 팩터리가 필요하고 수집기들은 점층적 팩터리를 제공하기 때문임.
+
+<br>
+
+여기에 새로운 상태인 플라스마를 추가해보자.
+
+이 상태와 연결된 전이는 기체에서 플라스마로 변하는 IONIZE, 플라스마에서 기체로 변하는 DEIONIZE가 있음.
+
+배열과 달리 EnumMap 버전은 상태 목록에 PLASMA 를 추가하고, 전이 목록에 IONIZE, DEIONIZE만 추가하면 끝남.
+
+```java
+// EnumMap 버전에 새로운 상태 추가
+public enum Phase{
+ SOLID, LIQUID, GAS, PLASMA;
+    public enum Transition{
+        MELT(SOLID,LIQUID), FREEZE(LIQUID,SOLID), BOIL(LIQUID,GAS), CONDENSE(GAS,LIQUID), SUBLIME(SOLID,GAS), DEPOSIT(GAS,SOLID), IONIZE(GAS, PLASMA), DEIONIZE(PLASMA, GAS);
+
+        ...
+    }
+}
+```
+
+실제 내부에서는 맵들의 맵이 배열들의 배열로 구현되니 낭비되는 공간과 시간도 거의 없이 명확하고 안전하고 유지보수하기 좋음.
+
+---
+
