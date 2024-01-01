@@ -658,3 +658,92 @@ System.out.println(plantsByLifeCycle);
 내부에서 배열을 사용하기 때문에, EnumMap의 성능은 ordinal을 쓴 배열과 비슷함.
 
 내부 구현 방식을 안으로 숨겨서 Map의 타입 안전성과 배열의 성능을 모두 얻어냄.
+
+EnumMap의 생성자가 받는 키 타입의 Class 객체는 한정적 타입 토큰으로, 런타임 제네릭 타입 정보를 제공함.
+
+---
+
+스트림을 사용해 맵을 관리하면 코드를 더 줄일 수 있음.
+
+```java
+//스트림을 사용한 코드
+//EnumMap 사용 X
+System.out.println(Arrays.stream(garden).collect(groupingBy(p->p.lifeCycle)));
+
+//EnumMap 사용
+System.out.println(Arrays.stream(garden).collect(groupingBy(p->p.lifeCycle, ()-> new EnumMap<>(LifeCycle.class), toSet())));
+```
+
+EnumMap 사용을 하지 않은 코드는 고유한 맵 구현체를 사용했기 때문에 EnumMap을 써서 얻은 공간과 성능 이점이 사라짐. 
+
+---
+
+스트림을 사용하면 EnumMap만 사용했을 때와는 살짝 다르게 동작함.
+
+EnumMap 버전은 언제나 시ㅏㄱ물의 생애주기당 하나씩의 중첩 맵을 만들지만, 스트림 버전에서는 해당 생애주기에 속하는 식물이 있을 때에만 만듬.
+
+정원에 한해살이와 여러해살이 식물만 살고, 두해살이 식물이 없다면 EnumMap 버전에서는 맵을 3개, 스트림 버전에서는 2개만 만든다.
+
+---
+
+```java
+//배열들의 배열의 인덱스에 ordinal()을 사용
+//안좋은 예
+public enum Phase{
+    SOLID, LIQUID, GAS;
+    public enum Transition{
+        MELT, FREEZE, BOIL, CONDENSE, SUBLIME, DEPOSIT;
+
+        //행은 from의 ordinal을, 열은 to의 ordinal을 인덱스로 씀
+        private static final Transition[][] TRANSITIONS = {
+            {null, MELT, SUBLIME},
+            {FREEZE, null, BOIL},
+            {DEPOSIT, CONDENSE, null}
+        };
+
+        //한 상태에서 다른 상태로의 전이를 반환
+        public static Transition from(Phase from, Phase to){
+            return TRANSITIONS[from.ordinal()][to.ordinal()];
+        }
+    }
+}
+```
+
+컴파일러는 ordinal과 배열 인덱스의 관계를 알 수 없음.
+
+Phase나 Phase.Transition 열거 타입을 수정하면서 상전이 표 TRANSITIONS를 함께 수정하지 않거나 실수로 잘못 수정하면 런타임 오류가 날 것.
+
+그리고 상전이 표의 크기는 상태의 가짓수가 늘어나면 제곱해서 커지며 null로 채워지는 칸도 늘어날 것
+
+전이 하나를 얻으려면 이전 상태와 이후 상태가 필요하니, 맵 2개를 중첩하셔 EnumMap을 사용하면 훨씬 나음.
+
+안쪽 맵은 이전 상태와 전이를 연결하고, 바깥 맵은 이후 상태와 안쪽 맵을 연결.
+
+전이 전후의 두 상태를 전이 열거 타입 Transition의 입력으로 받아, 이 Transition 상수들로 중첩된 EnumMap을 초기화하면 됨.
+
+```java
+//중첩 EnumMap으로 데이터와 열거 타입 쌍을 연결함
+public enum Phase{
+    SOLID, LIQUID, GAS;
+    public enum Transition{
+        MELT(SOLID,LIQUID), FREEZE(LIQUID,SOLID), BOIL(LIQUID,GAS), CONDENSE(GAS,LIQUID), SUBLIME(SOLID,GAS), DEPOSIT(GAS,SOLID);
+
+        private final Phase from;
+        private final Phase to;
+
+        Transition(Phase from, Phase to){
+            this.from=from;
+            this.to=to;
+        }
+
+        //상전이 맵을 초기화
+        private static final Map<Phase, Map<Phase,Transition>>
+        m = Stream.of(values()).collect(groupingBy(t->t.from,()->new EnumMap<>(Phase.class),
+        toMap(t->t.to,t->t,(x,y)->y,()->new EnumMap<>(Phase.class))));
+
+        public static Transition from(Phase from, Phase to){
+            return m.get(from).get(to);
+        }
+    }
+}
+```
