@@ -818,5 +818,34 @@ public enum Phase{
 이 때 열거 타입이 그 인터페이스의 표준 구현체 역할을 함
 
 ```java
+//인터페이스를 이용해 확장 가능 열거 타입을 흉내냄
+//Operation 타입을 확장할 수 있게 만든 코드
+public interface Operation{
+    double apply(double x, double y);
+}
 
+public enum BasicOperation implements Operation{
+    PLUS("+"){
+        public double apply(double x, double y) {return x+y;}
+    },
+    MINUS("-"){
+        public double apply(double x, double y) {return x-y;}
+    },
+    TIMES("*"){
+        public double apply(double x, double y) {return x*y;}
+    },
+    DIVIDE("/"){
+        public double apply(double x, double y) {return x/y;}
+    };
+
+    private final String symbol;
+
+    BasicOperation(String symbol){
+        this.symbol=symbol;
+    }
+
+    @Override public String toString(){
+        return symbol;
+    }
+}
 ```
