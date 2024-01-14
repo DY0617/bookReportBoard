@@ -849,3 +849,42 @@ public enum BasicOperation implements Operation{
     }
 }
 ```
+
+열거 타입인 BasicOperation은 확장할 수 없지만 인터페이스인 Operation은 확장할 수 있고, 이 인터페이스를 연산의 타입으로 사용하면 됨.
+
+이렇게 하면 Operation을 구현한 또 다른 열거 타입을 정의해 기본 타입인 BasicOperation을 대체할 수 있음.
+
+```java
+//확장 가능 열거 타입
+public enum ExtendedOperation implements Operation{
+    EXP("^"){
+        public double apply(double x, double y){
+            return Math.pow(x,y);
+        }
+    },
+    REMAINDER("%"){
+        public double apply(double x, double y){
+            return x%y;
+        }
+    };
+
+    private final String symbol;
+
+    ExtendedOperation(String symbol){
+        this.symbol=symbol;
+    }
+
+    @Override public String toString(){
+        return symbol;
+    }
+}
+```
+
+새로 작성한 연산은 기존 연산을 쓰던 곳이면 어디든 쓸 수 있음.
+
+Operation 인터페이스를 사용하도록 작성되어 있기만 하면 됨.
+
+apply가 인터페이스에 선언되어 있으니 열거 타입에 따로 추상 메서드로 선언하지 않아도 됨.
+
+---
+
