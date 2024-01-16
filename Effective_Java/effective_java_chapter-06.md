@@ -888,3 +888,18 @@ apply가 인터페이스에 선언되어 있으니 열거 타입에 따로 추�
 
 ---
 
+개별 인스턴스 수준에서뿐 아니라 타입 수준에서도 기본 열거 타입 대신 확장된 열거 타입을 넘겨 확장된 열거 타입의 원소 모두를 사용하게 할 수도 있음.
+
+```java
+public static void main(String[] args)}
+    double x=Double.parseDouble(args[0]);
+    double y=Double.parseDouble(args[1]);
+    test(ExtendedOperation.class,x,y);
+}
+
+private static <T extends Enum<T> & Operation> void test(
+        Class<T> opEnumType, double x, double y){
+    for(Operation op: opEnumType.getEnumConstants())
+        System.out.printf("%f %s %f = %f%n",x,op,y,op.apply(x,y));
+}
+```
