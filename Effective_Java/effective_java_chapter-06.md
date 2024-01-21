@@ -903,3 +903,14 @@ private static <T extends Enum<T> & Operation> void test(
         System.out.printf("%f %s %f = %f%n",x,op,y,op.apply(x,y));
 }
 ```
+
+main 메서드는 test 메서드에 ExtendedOperation의 class 리터럴을 넘겨 확장된 연산들이 무엇인지 알려줌.
+
+여기서 class 리터럴은 한정적 타입 토큰 역할을 함.
+
+opEnumType 매개변수 선언 T extends Enum~~ 은 Class 객체가 열거 타입인 동시에 Operation의 하위 타입이어야 한다는 뜻이다.
+
+열거 타입이어야 원소를 순회할 수 있고, Operation이어야 원소가 뜻하는 연산을 수행할 수 있기 때문이다.
+
+---
+
