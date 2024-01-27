@@ -916,3 +916,16 @@ opEnumType 매개변수 선언 T extends Enum~~ 은 Class 객체가 열거 타�
 
 두 번째 대안은 Class 객체 대신 한정적 와일드카드 타입인 Collection<? extends Operation>을 넘기는 방법임.
 
+```java
+public static void main(String[] args){
+    double x = Double.parseDouble(args[0]);
+    double y = Double.parseDouble(args[1]);
+    test(Arrays.asList(ExtendedOperation.values()),x,y);
+
+    private static void test(Collection<? extends Operation> opSet, double x, double y){
+        for(Operation op : opSet){
+            System.out.printf("%f %s %f = %f%n, x, op, y, op.apply(x,y));
+        }
+    }
+}
+```
