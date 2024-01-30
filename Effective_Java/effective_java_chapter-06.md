@@ -996,3 +996,14 @@ public @interface Test{
 @Retention, @Target
 
 애너테이션 선언에 다는 애너테이션을 메타애너테이션이라 함.
+
+@Retention(RetentionPolicy.RUHTIME) 메타애너테이션은 @Test가 런타임에도 유지되어야 한다는 표시임.
+
+만약 이 메타애너테이션을 생략하면 테스트 도구는 @Test를 인식할 수 없음.
+
+@Target(ElementType.METHOD) 메타애너테이션은 @Test가 반드시 메서드 선언에만 사용되어야 한다고 알려줌.
+
+따라서 클래스 선언, 필드 선언 등 다른 프로그램 요소에는 달 수 없음.
+
+---
+
