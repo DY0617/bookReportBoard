@@ -1015,3 +1015,30 @@ public @interface Test{
 
 ---
 
+```java
+//@Test 애너테이션을 실제 적용한 모습
+//아무 매개변수 없이 단순이 대상에 마킹한다는 뜻에서 마커 애너테이션이라 함.
+//이 애너테이션을 사용하면 프로그래머가 Test 이름에 오타를 내거나 메서드 선언 외의 프로그램 요소에 달면 컴파일 오류를 내어줌.
+
+public class Sample{
+    @Test pbulic static void m1(){}//성공해야 한다
+    public static void m2(){}
+    @Test public static void m4(){}
+    public static void m4(){}
+    @Test public void m5(){}//잘못 사용한 예: 정적 메서드가 아님
+    public static void m6(){}
+    @Test public static void m7()//실패해야 한다
+    public static void m8(){}
+}
+```
+
+Sample 클래스에는 정적 메서드가 7개고, 그중 4개에 @Test를 달았음.
+
+m3와 m7 메서드는 예외를 던지고 m1과 m5는 그렇지 않음.
+
+m5는 인스턴스 메서드이므로 @Test를 잘못 사용한 경우임.
+
+총 4개의 테스트 메서드 중 1개는 성공, 2개는 실패, 1개는 잘못 사용함. 그리고 @Test를 붙이지 않은 나머지 4개의 메서드는 테스트 도구가 무시할 것임.
+
+---
+
