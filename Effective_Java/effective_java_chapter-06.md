@@ -1042,3 +1042,35 @@ m5는 인스턴스 메서드이므로 @Test를 잘못 사용한 경우임.
 
 ---
 
+@Test 애너테이션이 Sample ㅋ르래스의 의미에 직접적인 영향을 주지는 않음. 그저 이 애너테이션에 관심 있는 프로그램에게 추가 정보를 제공할 뿐
+
+대상 코드의 의미는 그대로 둔 채 그 애너테이션에 관심 있는 도구에서 특별한 처리를 할 기회를 줌
+
+```java
+//마커 애너테이션을 처리하는 프로그램
+import java.lang.reflect.*;
+
+public class RunTests{
+    public static void main(String[] args) throws Exception{
+        int tests=0;
+        int passed=0;
+        Class<?> testClass=Class.forName(args[0]);
+        for(Method m:testClass.getDeclaredMethods()){
+            if(m.isAnnotationPresent(Test.class)){
+                tests++;
+                try{
+                    m.invoke(null);
+                    passed++;
+                } catch(InvocationTargetException wrappedExc){
+                    Throwable exc=wrappedExc.getCause();
+                    System.out.println(m+" 실패: "+exc);
+                } catch(Exception exc){
+                    System.out.prihntln("잘못 사용한 @Test: "+m);
+                }
+            }
+        }
+        System.out.printf("성공: %d, 실패: %d%n",passed,tests-passed);
+    }
+}
+```
+
